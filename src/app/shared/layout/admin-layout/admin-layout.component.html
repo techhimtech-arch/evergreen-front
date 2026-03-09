@@ -1,0 +1,36 @@
+<div class="admin-layout">
+  <!-- Top Navbar -->
+  <p-toolbar class="top-navbar">
+    <div class="toolbar-content">
+      <div class="toolbar-start">
+        <button pButton type="button" icon="pi pi-bars" 
+                class="p-button-text p-button-plain" 
+                (click)="toggleSidebar()"
+                style="margin-right: 1rem;">
+        </button>
+        <span class="navbar-title">Evergreen Platform</span>
+      </div>
+      <div class="toolbar-end">
+        <button pButton type="button" icon="pi pi-bell" 
+                class="p-button-text p-button-plain"
+                style="margin-right: 0.5rem;">
+        </button>
+        <button pButton type="button" icon="pi pi-user" 
+                class="p-button-text p-button-plain">
+        </button>
+      </div>
+    </div>
+  </p-toolbar>
+
+  <div class="main-container">
+    <!-- Left Sidebar -->
+    <div class="sidebar" [class.sidebar-collapsed]="!sidebarVisible">
+      <p-panelMenu [model]="menuItems" [style]="{'width': '100%'}"></p-panelMenu>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-area" [class.content-expanded]="!sidebarVisible">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

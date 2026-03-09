@@ -1,0 +1,48 @@
+<div class="dashboard-container">
+  <h1 class="dashboard-title">Dashboard Overview</h1>
+  
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card" *ngFor="let stat of stats">
+      <p-card [style]="{'background': 'linear-gradient(135deg, ' + stat.color + '20 0%, ' + stat.color + '10 100%)'}">
+        <div class="stat-content">
+          <div class="stat-icon">
+            <i [class]="stat.icon" [style]="{'color': stat.color, 'font-size': '2rem'}"></i>
+          </div>
+          <div class="stat-details">
+            <div class="stat-value">{{ stat.value }}</div>
+            <div class="stat-title">{{ stat.title }}</div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- Recent Activities -->
+  <div class="activities-section">
+    <p-card header="Recent Activities">
+      <div class="activities-list">
+        <div class="activity-item" *ngFor="let activity of recentActivities">
+          <div class="activity-date">{{ activity.date }}</div>
+          <div class="activity-description">{{ activity.activity }}</div>
+          <div class="activity-status" [class]="'status-' + activity.status">
+            <i [class]="'pi pi-' + (activity.status === 'success' ? 'check-circle' : 'info-circle')"></i>
+            {{ activity.status === 'success' ? 'Completed' : 'In Progress' }}
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <p-card header="Quick Actions">
+      <div class="action-buttons">
+        <button pButton label="New Project" icon="pi pi-plus" class="p-button-success"></button>
+        <button pButton label="Generate Report" icon="pi pi-file-pdf" class="p-button-info"></button>
+        <button pButton label="Add Volunteer" icon="pi pi-user-plus" class="p-button-warning"></button>
+        <button pButton label="View Map" icon="pi pi-map" class="p-button-secondary"></button>
+      </div>
+    </p-card>
+  </div>
+</div>
