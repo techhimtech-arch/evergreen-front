@@ -1,0 +1,64 @@
+/* Simulated Utility Classes since PrimeFlex/Tailwind is missing */
+
+.card {
+    background-color: var(--surface-card);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.flex { display: flex; }
+.justify-content-between { justify-content: space-between; }
+.justify-content-end { justify-content: flex-end; }
+.align-items-center { align-items: center; }
+.gap-3 { gap: 1rem; }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+}
+
+.col-12 { grid-column: span 12; }
+@media screen and (min-width: 768px) {
+    .md\:col-2 { grid-column: span 2; }
+    .md\:col-3 { grid-column: span 3; }
+    .md\:col-4 { grid-column: span 4; }
+}
+
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 2rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1.5rem; }
+.m-0 { margin: 0; }
+.mr-2 { margin-right: 0.5rem; }
+.pt-3 { padding-top: 1rem; }
+.p-4 { padding: 1.5rem; }
+
+.w-full { width: 100%; display: block; box-sizing: border-box; }
+
+.text-xl { font-size: 1.25rem; }
+.font-bold { font-weight: 700; }
+.font-medium { font-weight: 500; }
+.text-center { text-align: center; }
+
+.text-800 { color: var(--text-color); }
+.text-red-500 { color: #ef4444; }
+.text-color-secondary { color: var(--text-color-secondary); }
+
+.border-top-1 { border-top: 1px solid var(--surface-border); }
+
+/* Form Layout specific CSS */
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+.field label {
+    margin-bottom: 0.5rem;
+}
+
+p-select {
+    width: 100%;
+}
