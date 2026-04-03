@@ -1,17 +1,19 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { User, UserDetails } from '../../../../core/services/user';
 
 @Component({
   selector: 'app-user-management',
-  imports: [CommonModule, ReactiveFormsModule, TableModule, ButtonModule, DialogModule, InputTextModule, SelectModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TableModule, ButtonModule, DialogModule, InputTextModule, SelectModule, TooltipModule],
   templateUrl: './user-management.html',
   styleUrl: './user-management.css',
 })
@@ -27,20 +29,25 @@ export class UserManagement implements OnInit {
   isEditing = false;
   editingId: string | null = null;
   
+  searchQuery = '';
+  selectedRole = '';
+  selectedStatus = '';
+  
   userForm = this.fb.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: [''], // Required dynamic validation based on Creating vs Editing
-    roleId: ['', Validators.required]
+    roleId: ['', Validators.required],
+    isActive: [true]
   });
 
   // Mock roles until Phase 4 (Roles API) is integrated
   roleOptions = [
-    { label: 'Super Admin', value: 'role_super_admin' },
-    { label: 'Admin', value: 'role_admin' },
-    { label: 'Coordinator', value: 'role_coordinator' },
-    { label: 'Group Leader', value: 'role_group_leader' }
+    { label: 'Super Admin', value: 'superadmin' },
+    { label: 'Admin', value: 'admin' },
+    { label: 'Coordinator', value: 'coordinator' },
+    { label: 'Group Leader', value: 'group_leader' }
   ];
 
   ngOnInit() {
@@ -49,7 +56,13 @@ export class UserManagement implements OnInit {
 
   loadUsers(page: number = 1, limit: number = 10) {
     this.isLoading.set(true);
-    this.userService.getUsers(page, limit).subscribe({
+    
+    const params: any = { page, limit };
+    if (this.searchQuery) params.search = this.searchQuery;
+    if (this.selectedRole) params.role = this.selectedRole;
+    if (this.selectedStatus) params.isActive = this.selectedStatus === 'active';
+    
+    this.userService.getUsers(params).subscribe({
       next: (res) => {
         // Handle varying backend response geometries gracefully
         const usersList = res.data || res.users || (Array.isArray(res) ? res : []);
@@ -92,7 +105,8 @@ export class UserManagement implements OnInit {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      roleId: user.roleId || user.role?.id || this.roleOptions[1].value // Fallback role if misaligned
+      roleId: user.roleId || user.role?.id || this.roleOptions[1].value,
+      isActive: user.isActive !== undefined ? user.isActive : true
     });
     
     this.displayDialog = true;
@@ -106,6 +120,7 @@ export class UserManagement implements OnInit {
       lastName: this.userForm.value.lastName!,
       email: this.userForm.value.email!,
       roleId: this.userForm.value.roleId!,
+      isActive: this.userForm.value.isActive!
     };
 
     if (this.userForm.value.password) {
@@ -140,5 +155,27 @@ export class UserManagement implements OnInit {
         }
       });
     }
+  }
+
+  onSearch() {
+    this.loadUsers();
+  }
+
+  onFilterChange() {
+    this.loadUsers();
+  }
+
+  toggleUserStatus(user: any) {
+    const newStatus = !user.isActive;
+    this.userService.toggleUserStatus(user.id, newStatus).subscribe({
+      next: () => {
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Status Updated', 
+          detail: `User ${newStatus ? 'activated' : 'deactivated'} successfully` 
+        });
+        this.loadUsers(); // Refresh Grid automatically
+      }
+    });
   }
 }

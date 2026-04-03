@@ -37,7 +37,7 @@ export class AdminLayoutComponent implements OnInit {
     const baseMenu: MenuItem[] = [];
 
     // Admin & Super Admin Menu
-    if (role === 'admin' || role === 'super_admin') {
+    if (role === 'admin' || role === 'superadmin') {
       baseMenu.push(
         { label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/dashboard'] }, 
         { label: 'Group Management', icon: 'pi pi-users', routerLink: ['/admin/groups'] },

@@ -55,7 +55,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
             catchError((refreshError) => {
               isRefreshing = false;
               messageService.add({ severity: 'error', summary: 'Session Expired', detail: 'Please log in again.' });
-              authService.logout();
+              // authService.logout(); // Commented out for debugging - 401 will not logout for now
               return throwError(() => refreshError);
             })
           );

@@ -7,7 +7,7 @@ import { Api } from './api';
 export interface User {
   id: string;
   name: string;
-  role: 'super_admin' | 'admin' | 'group_leader' | 'verifier';
+  role: 'superadmin' | 'admin' | 'group_leader' | 'verifier';
   email?: string;
   district?: string;
   token?: string;
