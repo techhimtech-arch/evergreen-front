@@ -1,0 +1,93 @@
+.page-container {
+  padding: 1.5rem;
+  background-color: #f7f9fc;
+  min-height: calc(100vh - 64px);
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title-container h2 {
+  margin: 0 0 0.5rem 0;
+  color: #1f2937;
+  font-size: 1.8rem;
+}
+
+.title-container p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+  color: #374151;
+}
+
+.text-blue-600 {
+  color: #2563eb;
+}
+
+/* Badge tags for Status */
+.badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.badge-pending {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.badge-progress {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-completed {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.text-red-500 {
+  color: #ef4444;
+}
+
+.mt-4 { margin-top: 1rem; }
+
+/* Grid override */
+.formgrid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.field {
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.col-12 { width: 100%; }
+
+@media screen and (min-width: 768px) {
+  .md\:col-6 { width: 50%; }
+}
+
+.p-fluid input {
+  width: 100%;
+}

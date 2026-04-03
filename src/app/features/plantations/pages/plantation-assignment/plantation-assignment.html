@@ -1,0 +1,92 @@
+<div class="page-container">
+  <div class="header-section">
+    <div class="title-container">
+      <h2>Plantation Site Assignment</h2>
+      <p>Assign targets, species, and land areas to registered community groups.</p>
+    </div>
+    <div class="actions">
+      <p-button label="Assign Plantation" icon="pi pi-plus" (click)="showAssignDialog()"></p-button>
+    </div>
+  </div>
+
+  <p-card class="mt-4 table-card">
+    <p-table [value]="assignments" [paginator]="true" [rows]="10" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Ref ID</th>
+          <th>Assigned Group</th>
+          <th>Land Area (Ha)</th>
+          <th>Target Plants</th>
+          <th>Primary Species</th>
+          <th>Assigned Officer</th>
+          <th>Assigned Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-a>
+        <tr>
+          <td class="font-semibold text-blue-600">{{a.id}}</td>
+          <td class="font-semibold">{{getGroupName(a.groupId)}}</td>
+          <td>{{a.landArea}} Ha</td>
+          <td>{{a.targetPlants | number}} Saplings</td>
+          <td>{{a.species}}</td>
+          <td>{{getOfficerName(a.assignedOfficer)}}</td>
+          <td>{{a.assignedDate | date:'mediumDate'}}</td>
+          <td>
+            <span class="badge" 
+                  [class.badge-pending]="a.status === 'Pending'"
+                  [class.badge-progress]="a.status === 'In Progress'"
+                  [class.badge-completed]="a.status === 'Completed'">
+              {{a.status}}
+            </span>
+          </td>
+          <td>
+            <button pButton icon="pi pi-eye" class="p-button-text p-button-sm p-button-info" pTooltip="View Details"></button>
+            <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm p-button-secondary"></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="9" class="text-center p-4">No plantation assignments found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <!-- Assignment Dialog -->
+  <p-dialog header="Assign New Plantation Site" [(visible)]="displayDialog" [modal]="true" [style]="{width: '50vw'}" [draggable]="false" [resizable]="false">
+    <form [formGroup]="assignmentForm" class="p-fluid grid formgrid">
+      <div class="field col-12 md:col-6">
+        <label for="groupId">Select Community Group <span class="text-red-500">*</span></label>
+        <p-select id="groupId" [options]="groups" formControlName="groupId" placeholder="Choose a Mahila Mandal / Yuvak Mandal" appendTo="body" [filter]="true"></p-select>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="assignedOfficer">Assign Officer <span class="text-red-500">*</span></label>
+        <p-select id="assignedOfficer" [options]="officers" formControlName="assignedOfficer" placeholder="Select Supervisory Officer" appendTo="body"></p-select>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="landArea">Land Area (Hectares) <span class="text-red-500">*</span></label>
+        <p-inputNumber id="landArea" formControlName="landArea" placeholder="e.g. 1.5" [minFractionDigits]="1" [maxFractionDigits]="2" suffix=" Ha"></p-inputNumber>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="targetPlants">Target Plants (Count) <span class="text-red-500">*</span></label>
+        <p-inputNumber id="targetPlants" formControlName="targetPlants" placeholder="2000" [showButtons]="true" [min]="10"></p-inputNumber>
+      </div>
+      
+      <div class="field col-12">
+        <label for="species">Primary Species <span class="text-red-500">*</span></label>
+        <p-select id="species" [options]="speciesList" formControlName="species" placeholder="Select Primary Plant Species" appendTo="body"></p-select>
+      </div>
+    </form>
+    
+    <ng-template pTemplate="footer">
+      <p-button icon="pi pi-times" (click)="hideAssignDialog()" label="Cancel" styleClass="p-button-text"></p-button>
+      <p-button icon="pi pi-check" (click)="saveAssignment()" label="Confirm Assignment" [disabled]="assignmentForm.invalid" styleClass="p-button-primary"></p-button>
+    </ng-template>
+  </p-dialog>
+</div>

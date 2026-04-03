@@ -1,0 +1,110 @@
+<div class="page-container">
+  <div class="header-section">
+    <div class="title-container">
+      <h2>Group Management</h2>
+      <p>Manage Mahila Mandals, Yuvak Mandals, and SHGs across districts.</p>
+    </div>
+    <div class="actions">
+      <p-button label="Create Group" icon="pi pi-plus" (click)="showCreateDialog()"></p-button>
+    </div>
+  </div>
+
+  <p-card class="mt-4 table-card">
+    <p-table [value]="groups" [paginator]="true" [rows]="10" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Group Name</th>
+          <th>Type</th>
+          <th>District</th>
+          <th>Village / Panchayat</th>
+          <th>Leader Name</th>
+          <th>Mobile</th>
+          <th>Members</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-g>
+        <tr>
+          <td class="font-semibold">{{g.groupName}}</td>
+          <td>
+            <span class="badge" 
+                  [class.badge-mm]="g.groupType === 'Mahila Mandal'"
+                  [class.badge-ym]="g.groupType === 'Yuvak Mandal'"
+                  [class.badge-shg]="g.groupType === 'SHG'">
+              {{g.groupType}}
+            </span>
+          </td>
+          <td>{{g.district}}</td>
+          <td>{{g.village}}, {{g.panchayat}}</td>
+          <td>{{g.leaderName}}</td>
+          <td>{{g.mobile}}</td>
+          <td>{{g.membersCount}}</td>
+          <td>
+             <span class="badge badge-active" *ngIf="g.status === 'Active'">Active</span>
+             <span class="badge badge-inactive" *ngIf="g.status !== 'Active'">Inactive</span>
+          </td>
+          <td>
+            <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm p-button-secondary"></button>
+            <button pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger"></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="9" class="text-center p-4">No groups found. Be the first to create one!</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <!-- Create Group Dialog -->
+  <p-dialog header="Create New Group" [(visible)]="displayDialog" [modal]="true" [style]="{width: '50vw'}" [draggable]="false" [resizable]="false">
+    <form [formGroup]="groupForm" class="p-fluid grid formgrid">
+      <div class="field col-12 md:col-6">
+        <label for="groupName">Group Name <span class="text-red-500">*</span></label>
+        <input id="groupName" type="text" pInputText formControlName="groupName" placeholder="e.g. Saraswati Mahila Mandal">
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="groupType">Group Type <span class="text-red-500">*</span></label>
+        <p-select id="groupType" [options]="groupTypes" formControlName="groupType" placeholder="Select Type" appendTo="body"></p-select>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="district">District <span class="text-red-500">*</span></label>
+        <p-select id="district" [options]="districts" formControlName="district" placeholder="Select District" appendTo="body"></p-select>
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="panchayat">Panchayat <span class="text-red-500">*</span></label>
+        <input id="panchayat" type="text" pInputText formControlName="panchayat" placeholder="Enter Panchayat Name">
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="village">Village <span class="text-red-500">*</span></label>
+        <input id="village" type="text" pInputText formControlName="village" placeholder="Enter Village Name">
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="leaderName">Leader Name <span class="text-red-500">*</span></label>
+        <input id="leaderName" type="text" pInputText formControlName="leaderName" placeholder="Enter Leader's Name">
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="mobile">Mobile Number <span class="text-red-500">*</span></label>
+        <input id="mobile" type="text" pInputText formControlName="mobile" placeholder="10-digit Mobile">
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="membersCount">Total Members <span class="text-red-500">*</span></label>
+        <p-inputNumber id="membersCount" formControlName="membersCount" placeholder="0" [showButtons]="true" [min]="1"></p-inputNumber>
+      </div>
+    </form>
+    
+    <ng-template pTemplate="footer">
+      <p-button icon="pi pi-times" (click)="hideCreateDialog()" label="Cancel" styleClass="p-button-text"></p-button>
+      <p-button icon="pi pi-check" (click)="saveGroup()" label="Save Group" [disabled]="groupForm.invalid" styleClass="p-button-primary"></p-button>
+    </ng-template>
+  </p-dialog>
+</div>
