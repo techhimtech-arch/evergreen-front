@@ -17,6 +17,7 @@ export class Api {
     users: `${this.URL}/users`,
     roles: `${this.URL}/roles`,
     permissions: `${this.URL}/permissions`,
-    groups: `${this.URL}/groups`
+    groups: `${this.URL}/groups`,
+    organizations: `${this.URL}/organizations`
   };
 }

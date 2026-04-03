@@ -10,6 +10,7 @@ import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { User, UserDetails } from '../../../../core/services/user';
+import { OrganizationService, IOrganization } from '../../../../core/services/organization';
 
 @Component({
   selector: 'app-user-management',
@@ -21,14 +22,16 @@ export class UserManagement implements OnInit {
   private userService = inject(User);
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
+  private orgService = inject(OrganizationService);
 
   users = signal<any[]>([]);
   isLoading = signal(true);
-  
+  organizations = signal<IOrganization[]>([]);
+
   displayDialog = false;
   isEditing = false;
   editingId: string | null = null;
-  
+
   searchQuery = '';
   selectedRole = '';
   selectedStatus = '';
@@ -37,8 +40,9 @@ export class UserManagement implements OnInit {
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: [''], // Required dynamic validation based on Creating vs Editing
+    password: [''], // Required dynamic validation based on Creating vs Editing 
     roleId: ['', Validators.required],
+    organizationId: [''],
     isActive: [true]
   });
 
@@ -52,6 +56,17 @@ export class UserManagement implements OnInit {
 
   ngOnInit() {
     this.loadUsers();
+    this.loadOrganizations();
+  }
+
+  loadOrganizations() {
+    this.orgService.getOrganizations({ limit: 100 }).subscribe({
+      next: (res) => {
+        const orgs = res.data || res || [];
+        this.organizations.set(orgs);
+      },
+      error: (err) => console.error('Failed to load organizations', err)
+    });
   }
 
   loadUsers(page: number = 1, limit: number = 10) {
@@ -105,23 +120,28 @@ export class UserManagement implements OnInit {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      roleId: user.roleId || user.role?.id || this.roleOptions[1].value,
-      isActive: user.isActive !== undefined ? user.isActive : true
+      roleId: user.userType || user.roleId || user.role?.id || this.roleOptions[1].value,
+      organizationId: user.organizationId || null,
+      isActive: user.status === 'ACTIVE' || user.isActive === true || user.status === undefined
     });
-    
+
     this.displayDialog = true;
   }
 
   saveUser() {
     if (this.userForm.invalid) return;
 
-    const payload: UserDetails = {
+    const payload: any = {
       firstName: this.userForm.value.firstName!,
       lastName: this.userForm.value.lastName!,
       email: this.userForm.value.email!,
-      roleId: this.userForm.value.roleId!,
-      isActive: this.userForm.value.isActive!
+      userType: this.userForm.value.roleId!, // Maps 'roleId' field to 'userType'
+      status: this.userForm.value.isActive ? 'ACTIVE' : 'INACTIVE' // Maps boolean to string
     };
+
+    if (this.userForm.value.organizationId) {
+      payload.organizationId = this.userForm.value.organizationId;
+    }
 
     if (this.userForm.value.password) {
       payload.password = this.userForm.value.password;

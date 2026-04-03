@@ -12,5 +12,9 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'species',
     loadComponent: () => import('./pages/species-management/species-management').then(m => m.SpeciesManagement) // Agar exist kare to!
+  },
+  {
+    path: 'organizations',
+    loadComponent: () => import('./pages/organization-management/organization-management').then(m => m.OrganizationManagement)
   }
 ];

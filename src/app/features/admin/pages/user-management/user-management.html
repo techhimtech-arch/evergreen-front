@@ -97,6 +97,11 @@
     </div>
 
     <div class="field mb-5">
+      <label for="organizationId" class="font-medium text-800">Organization (Optional)</label>
+      <p-select id="organizationId" [options]="organizations()" formControlName="organizationId" optionLabel="name" optionValue="id" placeholder="Select Organization" appendTo="body" styleClass="w-full mt-2" [showClear]="true"></p-select>
+    </div>
+
+    <div class="field mb-5">
       <label for="isActive" class="font-medium text-800">Account Status</label>
       <p-select id="isActive" [options]="[{label: 'Active', value: true}, {label: 'Inactive', value: false}]" formControlName="isActive" optionLabel="label" optionValue="value" placeholder="Select Status" appendTo="body" styleClass="w-full mt-2"></p-select>
     </div>
