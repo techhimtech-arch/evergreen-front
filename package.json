@@ -26,6 +26,8 @@
     "@angular/forms": "^20.1.0",
     "@angular/platform-browser": "^20.1.0",
     "@angular/router": "^20.1.0",
+    "@primeuix/styles": "^2.0.3",
+    "@primeuix/themes": "^2.0.3",
     "chart.js": "^4.5.1",
     "primeicons": "^7.0.0",
     "primeng": "^20.4.0",
