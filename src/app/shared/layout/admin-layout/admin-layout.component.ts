@@ -21,7 +21,7 @@ export class AdminLayoutComponent implements OnInit {
   sidebarVisible = true;
   menuItems: MenuItem[] = [];
   currentUser: User | null = null;
-  
+
   ngOnInit() {
     this.currentUser = this.authService.currentUser();
     if (!this.currentUser) {
@@ -39,14 +39,15 @@ export class AdminLayoutComponent implements OnInit {
     // Admin & Super Admin Menu
     if (role === 'admin' || role === 'super_admin') {
       baseMenu.push(
-        { label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/dashboard'] },
-        { label: 'Group Management', icon: 'pi pi-users', routerLink: ['/groups'] },
+        { label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/dashboard'] }, 
+        { label: 'Group Management', icon: 'pi pi-users', routerLink: ['/admin/groups'] },
+        { label: 'User Management', icon: 'pi pi-user-plus', routerLink: ['/admin/users'] },
+        { label: 'Species Management', icon: 'pi pi-tags', routerLink: ['/admin/species'] },
         { label: 'Plantation Assignment', icon: 'pi pi-sitemap', routerLink: ['/plantations/assign'] },
         { label: 'Plantation Records', icon: 'pi pi-camera', routerLink: ['/plantations/records'] },
         { label: 'Verification', icon: 'pi pi-check-circle', routerLink: ['/verification'] },
         { label: 'Survival Monitoring', icon: 'pi pi-eye', routerLink: ['/survival-monitoring'] },
-        { label: 'Reports', icon: 'pi pi-chart-bar', routerLink: ['/reports'] },
-        { label: 'User Management', icon: 'pi pi-user-plus', routerLink: ['/user-management'] }
+        { label: 'Reports', icon: 'pi pi-chart-bar', routerLink: ['/reports'] }
       );
     }
 
@@ -68,8 +69,8 @@ export class AdminLayoutComponent implements OnInit {
 
     // Common logout
     baseMenu.push({
-      label: 'Logout', 
-      icon: 'pi pi-sign-out', 
+      label: 'Logout',
+      icon: 'pi pi-sign-out',
       command: () => this.logout()
     });
 

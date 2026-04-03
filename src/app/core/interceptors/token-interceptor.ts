@@ -1,8 +1,11 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Auth } from '../services/auth';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, switchMap, throwError, BehaviorSubject, filter, take } from 'rxjs';
 import { MessageService } from 'primeng/api';
+
+let isRefreshing = false;
+let refreshTokenSubject = new BehaviorSubject<any>(null);
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(Auth);
@@ -10,45 +13,64 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const token = authService.getAccessToken();
 
   let authReq = req;
-  
-  if (token && !req.url.includes('/auth/login') && !req.url.includes('/auth/refresh-tokens')) {
+
+  // We are now attaching the Access Token to ALL requests except /auth/login.
+  // Because the backend requires the access token even on the /auth/refresh-tokens endpoint!
+  if (token && !req.url.includes('/auth/login')) {
     authReq = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
+        Authorization: 'Bearer ' + token
       }
     });
   }
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Find the specific error string
       const errorMsg = error.error?.message || error.error?.error || error.message || 'An unexpected error occurred';
-      
-      // If it's a backend 500 error or similar, pop up the Toast!
+
       if (error.status !== 401 || !token) {
         messageService.add({
           severity: 'error',
-          summary: `Error ${error.status ? error.status : ''}`,
+          summary: 'Error ' + (error.status ? error.status : ''),
           detail: errorMsg,
-          life: 5000 // Display for 5 seconds
+          life: 5000 
         });
       }
 
-      // Handle 401 token refresh queue logic (if a token exists)
-      if (error.status === 401 && token) {
-        return authService.refreshToken().pipe(
-          switchMap((newToken) => {
-            const retriedReq = req.clone({
-              setHeaders: { Authorization: `Bearer ${newToken.accessToken}` }
-            });
-            return next(retriedReq);
-          }),
-          catchError((refreshError) => {
-            messageService.add({ severity: 'error', summary: 'Session Expired', detail: 'Please log in again.' });
-            authService.logout();
-            return throwError(() => refreshError);
-          })
-        );
+      // Handle 401 token refresh queue logic (if a token exists and it's not the refresh endpoint itself failing)
+      if (error.status === 401 && token && !req.url.includes('/auth/refresh-tokens')) {
+        if (!isRefreshing) {
+          isRefreshing = true;
+          refreshTokenSubject.next(null);
+
+          return authService.refreshToken().pipe(
+            switchMap((newToken) => {
+              isRefreshing = false;
+              refreshTokenSubject.next(newToken.accessToken);
+              const retriedReq = req.clone({
+                setHeaders: { Authorization: 'Bearer ' + newToken.accessToken }
+              });
+              return next(retriedReq);
+            }),
+            catchError((refreshError) => {
+              isRefreshing = false;
+              messageService.add({ severity: 'error', summary: 'Session Expired', detail: 'Please log in again.' });
+              authService.logout();
+              return throwError(() => refreshError);
+            })
+          );
+        } else {
+          return refreshTokenSubject.pipe(
+            filter(t => t != null),
+            take(1),
+            switchMap(jwt => {
+              const retriedReq = req.clone({
+                setHeaders: { Authorization: 'Bearer ' + jwt }
+              });
+              return next(retriedReq);
+            })
+          );
+        }
       }
       return throwError(() => error);
     })
