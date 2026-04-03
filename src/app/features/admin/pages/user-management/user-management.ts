@@ -48,10 +48,10 @@ export class UserManagement implements OnInit {
 
   // Mock roles until Phase 4 (Roles API) is integrated
   roleOptions = [
-    { label: 'Super Admin', value: 'superadmin' },
-    { label: 'Admin', value: 'admin' },
-    { label: 'Coordinator', value: 'coordinator' },
-    { label: 'Group Leader', value: 'group_leader' }
+    { label: 'Super Admin', value: 'SUPER_ADMIN' },
+    { label: 'Org Admin', value: 'ORG_ADMIN' },
+    { label: 'Volunteer', value: 'VOLUNTEER' },
+    { label: 'Citizen', value: 'CITIZEN' }
   ];
 
   ngOnInit() {
@@ -136,23 +136,26 @@ export class UserManagement implements OnInit {
       lastName: this.userForm.value.lastName!,
       email: this.userForm.value.email!,
       userType: this.userForm.value.roleId!, // Maps 'roleId' field to 'userType'
-      status: this.userForm.value.isActive ? 'ACTIVE' : 'INACTIVE' // Maps boolean to string
+      status: this.userForm.value.isActive ? 'ACTIVE' : 'INACTIVE', // Maps boolean to string
+      password: this.userForm.value.password, // Directly assigning password    
+      organizationId: this.userForm.value.organizationId // Directly assigning organizationId
     };
-
-    if (this.userForm.value.organizationId) {
-      payload.organizationId = this.userForm.value.organizationId;
-    }
-
-    if (this.userForm.value.password) {
-      payload.password = this.userForm.value.password;
-    }
-
+console.log('Payload being sent to API:', payload); // Debug log to verify payload structure
     if (this.isEditing && this.editingId) {
       this.userService.updateUser(this.editingId, payload).subscribe({
         next: () => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User updated successfully' });
           this.displayDialog = false;
           this.loadUsers(); // Refresh Grid automatically!
+        },
+        error: (err) => {
+          if (err.error && err.error.errors && Array.isArray(err.error.errors)) {
+            err.error.errors.forEach((e: any) => {
+              this.messageService.add({ severity: 'error', summary: 'Validation Error', detail: `${e.msg}` });
+            });
+          } else {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message || 'Failed to update user' });
+          }
         }
       });
     } else {
@@ -161,6 +164,15 @@ export class UserManagement implements OnInit {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User created successfully' });
           this.displayDialog = false;
           this.loadUsers(); // Refresh Grid automatically!
+        },
+        error: (err) => {
+          if (err.error && err.error.errors && Array.isArray(err.error.errors)) {
+            err.error.errors.forEach((e: any) => {
+              this.messageService.add({ severity: 'error', summary: 'Validation Error', detail: `${e.msg}` });
+            });
+          } else {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message || 'Failed to create user' });
+          }
         }
       });
     }

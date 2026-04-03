@@ -5,6 +5,7 @@ import { Api } from './api';
 
 export interface IOrganization {
   id?: string;
+  _id?: string;
   name: string;
   slug: string;
   organizationType: 'GOVERNMENT' | 'NGO' | 'SCHOOL' | 'CSR';
