@@ -44,6 +44,7 @@ export class AdminLayoutComponent implements OnInit {
         { label: 'User Management', icon: 'pi pi-user-plus', routerLink: ['/admin/users'] },
         { label: 'Species Management', icon: 'pi pi-tags', routerLink: ['/admin/species'] },
         { label: 'Organization Management', icon: 'pi pi-building', routerLink: ['/admin/organizations'] },
+        { label: 'Role Management', icon: 'pi pi-key', routerLink: ['/admin/roles'] },
         { label: 'Plantation Assignment', icon: 'pi pi-sitemap', routerLink: ['/plantations/assign'] },
         { label: 'Plantation Records', icon: 'pi pi-camera', routerLink: ['/plantations/records'] },
         { label: 'Verification', icon: 'pi pi-check-circle', routerLink: ['/verification'] },

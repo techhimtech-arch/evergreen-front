@@ -1,0 +1,62 @@
+<p-toast></p-toast>
+<div class="card p-4">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h2 class="text-2xl font-bold m-0">Roles Management</h2>
+    <p-button label="Add Role" icon="pi pi-plus" (onClick)="showCreateDialog()" severity="success"></p-button>
+  </div>
+
+  <p-table [value]="roles" [loading]="loading" responsiveLayout="scroll" styleClass="p-datatable-sm p-datatable-gridlines p-datatable-striped">
+    <ng-template #header>
+      <tr>
+        <th>Role Name</th>
+        <th>Description</th>
+        <th>Permissions</th>
+        <th style="width: 15vw">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-role>
+      <tr>
+        <td><span class="font-bold">{{role.name}}</span></td>
+        <td>{{role.description}}</td>
+        <td>
+            <div class="flex flex-wrap gap-1">
+                <span *ngFor="let p of role.permissions" class="p-badge p-badge-info">{{p}}</span>
+            </div>
+        </td>
+        <td>
+          <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [text]="true" severity="info" (onClick)="showEditDialog(role)"></p-button>
+          <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="deleteRole(role)"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4" class="text-center p-4 text-color-secondary">No roles found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Dialog for Add/Edit -->
+  <p-dialog [(visible)]="displayDialog" [header]="isEditMode ? 'Edit Role' : 'Create Role'" [modal]="true" [style]="{width: '500px'}" styleClass="p-fluid">
+    <form [formGroup]="roleForm" class="mt-4">
+      <div class="formgrid grid">
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Role Name <span class="text-red-500">*</span></label>
+          <input pInputText formControlName="name" class="w-full mt-2" autofocus placeholder="e.g. accountant" />
+        </div>
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Description</label>
+          <textarea pInputTextarea rows="3" formControlName="description" class="w-full mt-2" placeholder="Describe the role responsibilities..."></textarea>
+        </div>
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Permissions <span class="text-red-500">*</span></label>
+          <p-multiSelect [options]="permissions" formControlName="permissions" optionLabel="label" optionValue="value" placeholder="Select Permissions" appendTo="body" styleClass="w-full mt-2" display="chip"></p-multiSelect>
+        </div>
+      </div>
+      <div class="flex justify-content-end gap-3 pt-3 border-top-1 surface-border">
+        <p-button label="Cancel" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="hideDialog()"></p-button>
+        <p-button label="Save Role" icon="pi pi-check" (onClick)="saveRole()" [disabled]="roleForm.invalid"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+</div>
