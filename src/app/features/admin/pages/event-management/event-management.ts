@@ -4,9 +4,9 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { CalendarModule } from 'primeng/calendar';
-import { DropdownModule } from 'primeng/dropdown';
+import { TextareaModule } from 'primeng/textarea';
+import { DatePickerModule } from 'primeng/datepicker';
+import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { TagModule } from 'primeng/tag';
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -24,9 +24,9 @@ import { User } from '../../../../core/services/user';
     ButtonModule,
     DialogModule,
     InputTextModule,
-    InputTextareaModule,
-    CalendarModule,
-    DropdownModule,
+    TextareaModule,
+    DatePickerModule,
+    SelectModule,
     ToastModule,
     TagModule,
     ConfirmDialogModule,
@@ -199,10 +199,10 @@ export class EventManagement implements OnInit {
     return user ? `${user.firstName} ${user.lastName || ''}`.trim() : 'Unknown';
   }
 
-  getStatusSeverity(status: string): string {
+  getStatusSeverity(status: string): "success" | "info" | "warn" | "danger" | "secondary" | "contrast" {
     switch (status) {
       case 'PLANNED': return 'info';
-      case 'ONGOING': return 'warning';
+      case 'ONGOING': return 'warn';
       case 'COMPLETED': return 'success';
       case 'CANCELLED': return 'danger';
       default: return 'info';

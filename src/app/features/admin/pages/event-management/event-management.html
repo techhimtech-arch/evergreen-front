@@ -86,7 +86,7 @@
     <div class="field">
       <label for="description">Description</label>
       <textarea
-        pInputTextarea
+        pTextarea
         id="description"
         [(ngModel)]="eventForm.description"
         rows="3"
@@ -96,13 +96,13 @@
 
     <div class="field">
       <label for="eventDate">Event Date *</label>
-      <p-calendar
+      <p-datepicker
         id="eventDate"
         [(ngModel)]="eventForm.eventDate"
         dateFormat="yy-mm-dd"
         [showIcon]="true"
         placeholder="Select event date"
-      ></p-calendar>
+      ></p-datepicker>
     </div>
 
     <div class="field">
@@ -118,7 +118,7 @@
 
     <div class="field">
       <label for="organizerId">Organizer *</label>
-      <p-dropdown
+      <p-select
         id="organizerId"
         [(ngModel)]="eventForm.organizerId"
         [options]="users"
@@ -133,7 +133,7 @@
         <ng-template pTemplate="item" let-user>
           <span>{{ user.firstName }} {{ user.lastName }}</span>
         </ng-template>
-      </p-dropdown>
+      </p-select>
     </div>
 
     <div class="field">
@@ -150,14 +150,14 @@
 
     <div class="field">
       <label for="status">Status *</label>
-      <p-dropdown
+      <p-select
         id="status"
         [(ngModel)]="eventForm.status"
         [options]="statusOptions"
         optionLabel="label"
         optionValue="value"
         placeholder="Select status"
-      ></p-dropdown>
+      ></p-select>
     </div>
   </div>
 
