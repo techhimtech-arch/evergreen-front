@@ -20,6 +20,7 @@ export class Api {
     groups: `${this.URL}/groups`,
     plants: `${this.URL}/plants`,
     trees: `${this.URL}/trees`,
-    organizations: `${this.URL}/organizations`
+    organizations: `${this.URL}/organizations`,
+    assignments: `${this.URL}/assignments`
   };
 }

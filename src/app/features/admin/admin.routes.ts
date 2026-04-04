@@ -24,5 +24,9 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'roles',
     loadComponent: () => import('./pages/roles-management/roles-management').then(m => m.RolesManagement)
+  },
+  {
+    path: 'assignments',
+    loadComponent: () => import('./pages/target-assignments/target-assignments').then(m => m.TargetAssignments)
   }
 ];

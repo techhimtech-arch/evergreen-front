@@ -1,0 +1,74 @@
+<p-toast></p-toast>
+<div class="card p-4">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h2 class="text-2xl font-bold m-0">Target Assignments</h2>
+    <p-button label="New Assignment" icon="pi pi-plus" (onClick)="showCreateDialog()" severity="success"></p-button>
+  </div>
+
+  <p-table [value]="assignments" [paginator]="true" [rows]="10" [totalRecords]="totalRecords" [loading]="loading" responsiveLayout="scroll" styleClass="p-datatable-sm p-datatable-gridlines p-datatable-striped">
+    <ng-template #header>
+      <tr>
+        <th>Group Name</th>
+        <th>Land Area (Hectares)</th>
+        <th>Target Plants</th>
+        <th>Species Allowed</th>
+        <th>Assigned Date</th>
+        <th style="width: 10vw">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-assignment>
+      <tr>
+        <td>{{ assignment.groupId?.name || 'Unknown Group' }}</td>
+        <td>{{ assignment.landArea }}</td>
+        <td>{{ assignment.targetPlants }}</td>
+        <td>
+          <span *ngFor="let s of assignment.species" class="p-badge p-badge-info mr-1 mb-1">{{s}}</span>
+        </td>
+        <td>{{ assignment.assignedDate | date:'mediumDate' }}</td>
+        <td>
+            <!-- View / Edit Options -->
+            <p-button icon="pi pi-eye" class="mr-2" [rounded]="true" [text]="true" severity="info" (onClick)="viewDetails(assignment)"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6" class="text-center p-4 text-color-secondary">No target assignments found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Create Assignment Dialog -->
+  <p-dialog [(visible)]="displayDialog" header="Create Target Assignment" [modal]="true" [style]="{width: '600px'}" styleClass="p-fluid">
+    <form [formGroup]="assignmentForm" (ngSubmit)="saveAssignment()" class="mt-4">
+      <div class="formgrid grid">
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Select Group <span class="text-red-500">*</span></label>
+          <p-select [options]="groupOptions" formControlName="groupId" [filter]="true" optionLabel="name" optionValue="_id" appendTo="body" placeholder="Select a Group" styleClass="w-full mt-2"></p-select>
+        </div>
+
+        <div class="field col-12 md:col-6 mb-4">
+          <label class="font-medium text-800">Target Plants Count <span class="text-red-500">*</span></label>
+          <input pInputText type="number" formControlName="targetPlants" class="w-full mt-2" placeholder="e.g. 500" />
+        </div>
+
+        <div class="field col-12 md:col-6 mb-4">
+          <label class="font-medium text-800">Land Area (Hectares) <span class="text-red-500">*</span></label>
+          <input pInputText type="number" formControlName="landArea" step="0.1" class="w-full mt-2" placeholder="e.g. 10.5" />
+        </div>
+
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Allowed Species</label>
+          <!-- Using MultiSelect to allow choosing multiple tags -->
+          <p-multiSelect [options]="speciesOptions" formControlName="species" [filter]="true" optionLabel="label" optionValue="value" optionDisabled="inactive" placeholder="Select Species" [displaySelectedLabel]="true" appendTo="body" styleClass="w-full mt-2"></p-multiSelect>
+          <small class="text-color-secondary">Leave empty if any species is allowed.</small>
+        </div>
+
+      </div>
+      <div class="flex justify-content-end gap-3 pt-3 border-top-1 surface-border">
+        <p-button label="Cancel" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="hideDialog()"></p-button>
+        <p-button label="Assign Target" icon="pi pi-check" type="submit" [disabled]="assignmentForm.invalid" [loading]="saving"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+</div>
