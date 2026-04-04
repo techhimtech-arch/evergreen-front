@@ -81,7 +81,12 @@ export class UserManagement implements OnInit {
       next: (res) => {
         // Handle varying backend response geometries gracefully
         const usersList = res.data || res.users || (Array.isArray(res) ? res : []);
-        this.users.set(usersList);
+        // Map users to ensure isActive is derived from status for the UI
+        const mappedUsers = usersList.map((u: any) => ({
+          ...u,
+          isActive: u.status === 'ACTIVE' || u.isActive === true || u.status === undefined
+        }));
+        this.users.set(mappedUsers);
         this.isLoading.set(false);
       },
       error: (err) => {
