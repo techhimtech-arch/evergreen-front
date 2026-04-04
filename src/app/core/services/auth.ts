@@ -37,7 +37,7 @@ export class Auth {
         const user: User = {
           id: authData.user?.id || 'usr_fetched',
           name: authData.user?.firstName ? `${authData.user.firstName} ${authData.user.lastName || ''}` : email,
-          role: authData.user?.userType || 'CITIZEN',
+          role: authData.user?.role || authData.user?.userType || 'CITIZEN',
           district: authData.user?.district,
           email: email
         };
