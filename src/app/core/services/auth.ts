@@ -20,10 +20,15 @@ export class Auth {
   private http = inject(HttpClient);
   private api = inject(Api);
   private router = inject(Router);
-  
-  currentUser = signal<User | null>(null);
 
-  login(email: string, password: string): Observable<{ success: boolean; user?: User }> {
+  currentUser = signal<User | null>(this.getStoredUser());
+
+  private getStoredUser(): User | null {
+    const stored = localStorage.getItem('currentUser');
+    return stored ? JSON.parse(stored) : null;
+  }
+
+  login(email: string, password: string): Observable<{ success: boolean; user?:User }> {
     return this.http.post<any>(this.api.endpoints.auth.login, { email, password }).pipe(
       map(response => {
         // Adjust these mappings based on your actual backend response structure
