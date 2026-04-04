@@ -17,7 +17,9 @@ export class Api {
     users: `${this.URL}/users`,
     roles: `${this.URL}/roles`,
     permissions: `${this.URL}/permissions`,
-    groups: `${this.URL}/groups`,
+    groups: `${this.URL}/api/v1/groups`,
+    plants: `${this.URL}/api/v1/plants`,
+    trees: `${this.URL}/api/v1/trees`,
     organizations: `${this.URL}/organizations`
   };
 }

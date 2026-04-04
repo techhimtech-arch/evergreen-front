@@ -1,1 +1,80 @@
-<p>species-management works!</p>
+<p-toast></p-toast>
+<div class="card p-4">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h2 class="text-2xl font-bold m-0">Plant Species Catalog</h2>
+    <p-button label="Add New Species" icon="pi pi-plus" (onClick)="showCreateDialog()" severity="success"></p-button>
+  </div>
+
+  <p-table [value]="plants" [loading]="loading" [paginator]="true" [rows]="10" responsiveLayout="scroll" styleClass="p-datatable-sm p-datatable-gridlines p-datatable-striped">
+    <ng-template #header>
+      <tr>
+        <th>Image</th>
+        <th>Common Name</th>
+        <th>Scientific Name</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th style="width: 15vw">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-plant>
+      <tr>
+        <td>
+            <img *ngIf="plant.image" [src]="plant.image" alt="Plant Image" style="width: 50px; height: 50px; border-radius: 4px; object-fit: cover;">
+            <i *ngIf="!plant.image" class="pi pi-image text-3xl text-400"></i>
+        </td>
+        <td><span class="font-bold">{{plant.name}}</span></td>
+        <td class="font-italic text-600">{{plant.scientificName}}</td>
+        <td>
+          <span class="p-badge" [ngClass]="{
+            'p-badge-success': plant.category === 'FOREST',
+            'p-badge-warning': plant.category === 'FRUIT',
+            'p-badge-info': plant.category === 'MEDICINAL',
+            'p-badge-help': plant.category === 'ORNAMENTAL'
+          }">{{plant.category}}</span>
+        </td>
+        <td>{{plant.description}}</td>
+        <td>
+          <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [text]="true" severity="info" (onClick)="showEditDialog(plant)"></p-button>
+          <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="deletePlant(plant)"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6" class="text-center p-4 text-color-secondary">No plant catalog found. Add some species!</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Dialog for Add/Edit -->
+  <p-dialog [(visible)]="displayDialog" [header]="isEditMode ? 'Edit Species' : 'Add New Species'" [modal]="true" [style]="{width: '500px'}" styleClass="p-fluid">
+    <form [formGroup]="plantForm" class="mt-4">
+      <div class="formgrid grid">
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Common Name <span class="text-red-500">*</span></label>
+          <input pInputText formControlName="name" class="w-full mt-2" autofocus placeholder="e.g. Neem" />
+        </div>
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Scientific Name <span class="text-red-500">*</span></label>
+          <input pInputText formControlName="scientificName" class="w-full mt-2" placeholder="e.g. Azadirachta indica" />
+        </div>
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Category <span class="text-red-500">*</span></label>
+          <p-select [options]="categories" formControlName="category" optionLabel="label" optionValue="value" placeholder="Select Category" appendTo="body" styleClass="w-full mt-2"></p-select>
+        </div>
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Image URL</label>
+          <input pInputText formControlName="image" class="w-full mt-2" placeholder="https://link-to-image.com/neem.jpg" />
+        </div>
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Description</label>
+          <textarea pInputTextarea rows="3" formControlName="description" class="w-full mt-2" placeholder="Fast-growing evergreen tree..."></textarea>
+        </div>
+      </div>
+      <div class="flex justify-content-end gap-3 pt-3 border-top-1 surface-border">
+        <p-button label="Cancel" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="hideDialog()"></p-button>
+        <p-button label="Save Catalog" icon="pi pi-check" (onClick)="savePlant()" [disabled]="plantForm.invalid"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+</div>

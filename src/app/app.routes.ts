@@ -21,6 +21,10 @@ export const routes: Routes = [
       {
         path: 'plantations/assign',
         loadComponent: () => import('./features/plantations/pages/plantation-assignment/plantation-assignment').then(m => m.PlantationAssignment)
+      },
+      {
+        path: 'plantations',
+        loadChildren: () => import('./features/plantations/plantations-routing-module').then(m => m.PlantationsRoutingModule)
       }
     ]
   }

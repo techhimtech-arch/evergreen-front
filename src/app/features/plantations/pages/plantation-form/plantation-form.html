@@ -1,1 +1,55 @@
-<p>plantation-form works!</p>
+<p-toast></p-toast>
+<div class="card p-4">
+  <div class="flex align-items-center mb-4">
+    <p-button icon="pi pi-arrow-left" [rounded]="true" [text]="true" routerLink=".."></p-button>
+    <h2 class="text-2xl font-bold m-0 ml-3">{{ isEditMode ? 'Edit Tree Record' : 'Log Planted Tree' }}</h2>
+  </div>
+
+  <form [formGroup]="treeForm" class="mt-4 max-w-3xl">
+    <div class="formgrid grid">
+      <div class="field col-12 md:col-6 mb-4">
+        <label class="font-medium text-800">Plant Species <span class="text-red-500">*</span></label>
+        <p-select [options]="plants" formControlName="plantTypeId" optionLabel="name" optionValue="_id" placeholder="Select Species" appendTo="body" styleClass="w-full mt-2"></p-select>
+      </div>
+
+      <div class="field col-12 md:col-6 mb-4">
+        <label class="font-medium text-800">Plantation Event</label>
+        <p-select [options]="events" formControlName="eventId" optionLabel="name" optionValue="_id" placeholder="Select Event (Optional)" appendTo="body" [showClear]="true" styleClass="w-full mt-2"></p-select>
+      </div>
+
+      <div class="field col-12 mb-4">
+        <label class="font-medium text-800">Location Description <span class="text-red-500">*</span></label>
+        <input pInputText formControlName="location" class="w-full mt-2" placeholder="e.g. Near Panchayat Bhawan, Kangra" />
+      </div>
+
+      <div class="field col-12 md:col-6 mb-4">
+        <label class="font-medium text-800">Status</label>
+        <p-select [options]="statuses" formControlName="status" optionLabel="label" optionValue="value" placeholder="Select Status" appendTo="body" styleClass="w-full mt-2"></p-select>
+      </div>
+
+      <div class="field col-12 md:col-6 mb-4">
+        <label class="font-medium text-800">Photo URL</label>
+        <input pInputText formControlName="photo" class="w-full mt-2" placeholder="https://storage-url.com/tree-proof.jpg" />
+      </div>
+
+      <div formGroupName="coordinates" class="col-12 mt-2 border-top-1 surface-border pt-4">
+        <h3 class="text-xl font-bold mb-3 mt-0">GPS Coordinates</h3>
+        <div class="formgrid grid">
+          <div class="field col-6">
+            <label class="font-medium text-800">Latitude <span class="text-red-500">*</span></label>
+            <input pInputText formControlName="latitude" type="number" step="any" class="w-full mt-2" placeholder="e.g. 32.0998" />
+          </div>
+          <div class="field col-6">
+            <label class="font-medium text-800">Longitude <span class="text-red-500">*</span></label>
+            <input pInputText formControlName="longitude" type="number" step="any" class="w-full mt-2" placeholder="e.g. 76.2691" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-content-end gap-3 pt-4 mt-4 border-top-1 surface-border">
+      <p-button label="Cancel" icon="pi pi-times" [text]="true" severity="secondary" routerLink=".."></p-button>
+      <p-button label="Log Tree" icon="pi pi-check" (onClick)="saveTree()" [disabled]="treeForm.invalid"></p-button>
+    </div>
+  </form>
+</div>

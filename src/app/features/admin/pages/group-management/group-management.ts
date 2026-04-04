@@ -9,18 +9,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 
-export interface GroupModel {
-  id: string;
-  groupName: string;
-  groupType: string;
-  village: string;
-  panchayat: string;
-  district: string;
-  leaderName: string;
-  mobile: string;
-  membersCount: number;
-  status: string;
-}
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { GroupService, IGroup } from '../../../../../core/services/group';
 
 @Component({
   selector: 'app-group-management',
@@ -34,22 +25,27 @@ export interface GroupModel {
     DialogModule,
     InputTextModule,
     SelectModule,
-    InputNumberModule
+    InputNumberModule,
+    ToastModule
   ],
+  providers: [MessageService],
   templateUrl: './group-management.html',
   styleUrls: ['./group-management.css']
 })
 export class GroupManagement implements OnInit {
   private fb = inject(FormBuilder);
+  private groupService = inject(GroupService);
+  private messageService = inject(MessageService);
   
-  groups: GroupModel[] = [];
+  groups: IGroup[] = [];
   displayDialog: boolean = false;
   groupForm!: FormGroup;
 
   groupTypes = [
     { label: 'Mahila Mandal', value: 'Mahila Mandal' },
     { label: 'Yuvak Mandal', value: 'Yuvak Mandal' },
-    { label: 'SHG (Self Help Group)', value: 'SHG' }
+    { label: 'Self Help Group', value: 'Self Help Group' },
+    { label: 'Other', value: 'Other' }
   ];
 
   districts = [
@@ -62,7 +58,7 @@ export class GroupManagement implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.loadMockData();
+    this.loadGroups();
   }
 
   initForm() {
@@ -74,33 +70,24 @@ export class GroupManagement implements OnInit {
       district: ['', Validators.required],
       leaderName: ['', Validators.required],
       mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      membersCount: [10, [Validators.required, Validators.min(1)]],
-      status: ['Active']
+      membersCount: [10, [Validators.required, Validators.min(1)]]
     });
   }
 
-  loadMockData() {
-    this.groups = [
-      {
-        id: '1', groupName: 'Saraswati Mahila Mandal', groupType: 'Mahila Mandal',
-        village: 'Rampur', panchayat: 'Rampur', district: 'Shimla',
-        leaderName: 'Pooja Devi', mobile: '9876543210', membersCount: 15, status: 'Active'
+  loadGroups() {
+    this.groupService.getGroups().subscribe({
+      next: (res) => {
+        this.groups = res.data || [];
       },
-      {
-        id: '2', groupName: 'Kullu Yuvak Mandal', groupType: 'Yuvak Mandal',
-        village: 'Bhuntar', panchayat: 'Bhuntar', district: 'Kullu',
-        leaderName: 'Amit Sharma', mobile: '9988776655', membersCount: 22, status: 'Active'
-      },
-      {
-        id: '3', groupName: 'Nari Shakti SHG', groupType: 'SHG',
-        village: 'Palampur', panchayat: 'Palampur', district: 'Kangra',
-        leaderName: 'Sunita Thakur', mobile: '9123456789', membersCount: 12, status: 'Active'
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load groups' });
+        console.error(err);
       }
-    ];
+    });
   }
 
   showCreateDialog() {
-    this.groupForm.reset({ membersCount: 10, status: 'Active' });
+    this.groupForm.reset({ membersCount: 10 });
     this.displayDialog = true;
   }
 
@@ -110,13 +97,17 @@ export class GroupManagement implements OnInit {
 
   saveGroup() {
     if (this.groupForm.valid) {
-      const newGroup: GroupModel = {
-        id: Math.random().toString(36).substr(2, 9),
-        ...this.groupForm.value
-      };
-      
-      this.groups = [...this.groups, newGroup];
-      this.hideCreateDialog();
+      const payload: IGroup = this.groupForm.value;
+      this.groupService.createGroup(payload).subscribe({
+        next: (res) => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Group Created' });
+          this.loadGroups();
+          this.hideCreateDialog();
+        },
+        error: (err) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message || 'Failed to create group' });
+        }
+      });
     }
   }
 }
