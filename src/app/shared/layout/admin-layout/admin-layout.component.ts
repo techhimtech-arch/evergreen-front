@@ -7,6 +7,8 @@ import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { Auth, User } from '../../../core/services/auth';
 
+import { USER_ROLES } from '../../../core/constants/roles';
+
 @Component({
   selector: 'app-admin-layout',
   templateUrl: './admin-layout.component.html',
@@ -36,8 +38,8 @@ export class AdminLayoutComponent implements OnInit {
 
     const baseMenu: MenuItem[] = [];
 
-    // Admin & Super Admin Menu
-    if (role === 'admin' || role === 'superadmin') {
+    // Super Admin & Org Admin Menu
+    if (role === USER_ROLES.SUPER_ADMIN || role === USER_ROLES.ORG_ADMIN) {
       baseMenu.push(
         { label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/dashboard'] }, 
         { label: 'Group Management', icon: 'pi pi-users', routerLink: ['/admin/groups'] },
@@ -54,19 +56,19 @@ export class AdminLayoutComponent implements OnInit {
       );
     }
 
-    // Group Leader Menu
-    if (role === 'group_leader') {
+    // Volunteer Menu
+    if (role === USER_ROLES.VOLUNTEER) {
       baseMenu.push(
         { label: 'My Plantations', icon: 'pi pi-sitemap', routerLink: ['/my-plantations'] },
         { label: 'Plantation Entry', icon: 'pi pi-camera', routerLink: ['/plantations/entry'] }
       );
     }
 
-    // Verifier Menu
-    if (role === 'verifier') {
+    // Citizen Menu
+    if (role === USER_ROLES.CITIZEN) {
       baseMenu.push(
-        { label: 'Pending Inspections', icon: 'pi pi-check-square', routerLink: ['/inspections'] },
-        { label: 'Survival Monitoring', icon: 'pi pi-eye', routerLink: ['/survival-monitoring'] }
+        { label: 'Public Events', icon: 'pi pi-calendar', routerLink: ['/events'] },
+        { label: 'My Trees', icon: 'pi pi-check-square', routerLink: ['/my-trees'] }
       );
     }
 

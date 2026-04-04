@@ -7,7 +7,7 @@ import { Api } from './api';
 export interface User {
   id: string;
   name: string;
-  role: 'superadmin' | 'admin' | 'group_leader' | 'verifier';
+  role: 'SUPER_ADMIN' | 'ORG_ADMIN' | 'VOLUNTEER' | 'CITIZEN';
   email?: string;
   district?: string;
   token?: string;
@@ -37,7 +37,7 @@ export class Auth {
         const user: User = {
           id: authData.user?.id || 'usr_fetched',
           name: authData.user?.firstName ? `${authData.user.firstName} ${authData.user.lastName || ''}` : email,
-          role: authData.user?.role?.name || authData.user?.role || 'admin',
+          role: authData.user?.userType || 'CITIZEN',
           district: authData.user?.district,
           email: email
         };
