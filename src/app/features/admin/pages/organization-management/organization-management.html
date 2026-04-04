@@ -1,81 +1,93 @@
 <p-toast></p-toast>
 <div class="card p-4">
   <div class="flex justify-content-between align-items-center mb-4">
-    <h2 class="text-2xl font-bold">Organization Management</h2>
-    <p-button label="Add Organization" icon="pi pi-plus" (click)="showCreateDialog()"></p-button>
+    <h2 class="text-2xl font-bold m-0">Organization Management</h2>
+    <p-button label="Add Organization" icon="pi pi-plus" (onClick)="showCreateDialog()" severity="success"></p-button>
   </div>
 
-  <p-table [value]="organizations" [paginator]="true" [rows]="10" [totalRecords]="totalRecords" [loading]="loading" responsiveLayout="scroll">
-    <ng-template pTemplate="header">
+  <p-table [value]="organizations" [paginator]="true" [rows]="10" [totalRecords]="totalRecords" [loading]="loading" responsiveLayout="scroll" styleClass="p-datatable-sm p-datatable-gridlines p-datatable-striped">
+    <ng-template #header>
       <tr>
         <th>Name</th>
         <th>Type</th>
         <th>Email</th>
         <th>Phone</th>
         <th>Status</th>
-        <th>Actions</th>
+        <th style="width: 15vw">Actions</th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-org>
+    <ng-template #body let-org>
       <tr>
         <td>{{org.name}}</td>
-        <td>{{org.organizationType}}</td>
+        <td><span class="p-badge p-badge-info">{{org.organizationType}}</span></td>
         <td>{{org.contactEmail}}</td>
         <td>{{org.contactPhone}}</td>
         <td>
-          <span [class]="'badge ' + (org.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
+          <span class="p-badge" [class]="org.status === 'ACTIVE' ? 'p-badge-success' : 'p-badge-danger'">
             {{org.status}}
           </span>
         </td>
         <td>
-          <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-success p-button-text mr-2" (click)="showEditDialog(org)"></p-button>
-          <p-button [icon]="org.status === 'ACTIVE' ? 'pi pi-ban' : 'pi pi-check'" [styleClass]="'p-button-rounded p-button-text ' + (org.status === 'ACTIVE' ? 'p-button-danger' : 'p-button-success')" (click)="toggleStatus(org)"></p-button>
+          <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [text]="true" severity="info" (onClick)="showEditDialog(org)"></p-button>
+          <p-button 
+            [icon]="org.status === 'ACTIVE' ? 'pi pi-ban' : 'pi pi-check'" 
+            class="mr-2" 
+            [rounded]="true" 
+            [text]="true" 
+            [severity]="org.status === 'ACTIVE' ? 'help' : 'success'" 
+            (onClick)="toggleStatus(org)">
+          </p-button>
         </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6" class="text-center p-4 text-color-secondary">No records found. Data is empty or server unreachable.</td>
       </tr>
     </ng-template>
   </p-table>
 
   <!-- Dialog for Add/Edit -->
-  <p-dialog [(visible)]="displayDialog" [header]="isEditMode ? 'Edit Organization' : 'Add Organization'" [modal]="true" [style]="{width: '50vw'}">
-    <form [formGroup]="orgForm" class="flex flex-column gap-3 mt-3">
-      <div class="grid">
-        <div class="col-6 p-field">
-          <label>Organization Name</label>
-          <input pInputText formControlName="name" class="w-full" />
+  <p-dialog [(visible)]="displayDialog" [header]="isEditMode ? 'Edit Organization' : 'Add Organization'" [modal]="true" [style]="{width: '600px'}" styleClass="p-fluid">
+    <form [formGroup]="orgForm" (ngSubmit)="saveOrganization()" class="mt-4">
+      <div class="formgrid grid">
+        <div class="field col-12 md:col-6 mb-4">
+          <label class="font-medium text-800">Organization Name <span class="text-red-500">*</span></label>
+          <input pInputText formControlName="name" class="w-full mt-2" autofocus />
         </div>
-        <div class="col-6 p-field">
-          <label>Slug</label>
-          <input pInputText formControlName="slug" class="w-full" />
+        <div class="field col-12 md:col-6 mb-4">
+          <label class="font-medium text-800">Slug <span class="text-red-500">*</span></label>
+          <input pInputText formControlName="slug" class="w-full mt-2" />
         </div>
-        <div class="col-6 p-field">
-          <label>Type</label>
-          <p-select [options]="orgTypes" formControlName="organizationType" optionLabel="label" optionValue="value" class="w-full" styleClass="w-full"></p-select>
+        <div class="field col-12 md:col-6 mb-4">
+          <label class="font-medium text-800">Type <span class="text-red-500">*</span></label>
+          <p-select [options]="orgTypes" formControlName="organizationType" optionLabel="label" optionValue="value" appendTo="body" placeholder="Select Type" styleClass="w-full mt-2"></p-select>
         </div>
-        <div class="col-6 p-field">
-          <label>Contact Email</label>
-          <input pInputText formControlName="contactEmail" type="email" class="w-full" />
+        <div class="field col-12 md:col-6 mb-4">
+          <label class="font-medium text-800">Contact Email <span class="text-red-500">*</span></label>
+          <input pInputText formControlName="contactEmail" type="email" class="w-full mt-2" />
         </div>
-        <div class="col-6 p-field">
-          <label>Contact Phone</label>
-          <input pInputText formControlName="contactPhone" class="w-full" />
+        <div class="field col-12 md:col-6 mb-4">
+          <label class="font-medium text-800">Contact Phone</label>
+          <input pInputText formControlName="contactPhone" class="w-full mt-2" />
         </div>
-        <div class="col-6 p-field">
-          <label>Address</label>
-          <input pInputText formControlName="address" class="w-full" />
+        <div class="field col-12 md:col-6 mb-4">
+          <label class="font-medium text-800">Address</label>
+          <input pInputText formControlName="address" class="w-full mt-2" />
         </div>
-        <div class="col-12 p-field">
-          <label>Description</label>
-          <input pInputText formControlName="description" class="w-full" />
+        <div class="field col-12 mb-4">
+          <label class="font-medium text-800">Description</label>
+          <textarea pInputTextarea rows="3" formControlName="description" class="w-full mt-2"></textarea>
         </div>
-        <div class="col-6 p-field" *ngIf="isEditMode">
-          <label>Status</label>
-          <p-select [options]="statusOptions" formControlName="status" optionLabel="label" optionValue="value" class="w-full" styleClass="w-full"></p-select>
+        <div class="field col-12 md:col-6 mb-4" *ngIf="isEditMode">
+          <label class="font-medium text-800">Status</label>
+          <p-select [options]="statusOptions" formControlName="status" optionLabel="label" optionValue="value" appendTo="body" styleClass="w-full mt-2"></p-select>
         </div>
       </div>
+      <div class="flex justify-content-end gap-3 pt-3 border-top-1 surface-border">
+        <p-button label="Cancel" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="hideDialog()"></p-button>
+        <p-button label="Save Changes" icon="pi pi-check" type="submit" [disabled]="orgForm.invalid"></p-button>
+      </div>
     </form>
-    <ng-template pTemplate="footer">
-      <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text" (click)="hideDialog()"></p-button>
-      <p-button label="Save" icon="pi pi-check" [disabled]="orgForm.invalid" (click)="saveOrganization()"></p-button>
-    </ng-template>
   </p-dialog>
 </div>

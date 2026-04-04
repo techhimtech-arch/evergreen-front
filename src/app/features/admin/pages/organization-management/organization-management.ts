@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -22,6 +23,7 @@ import { OrganizationService, IOrganization } from '../../../../core/services/or
     ButtonModule,
     DialogModule,
     InputTextModule,
+    TextareaModule,
     SelectModule,
     ToastModule
   ],
@@ -155,3 +157,4 @@ export class OrganizationManagement implements OnInit {
     });
   }
 }
+
