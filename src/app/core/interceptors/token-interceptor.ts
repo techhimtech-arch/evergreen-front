@@ -38,7 +38,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       // Handle 401 token refresh queue logic (if a token exists and it's not the refresh endpoint itself failing)
-      if (error.status === 401 && token && !req.url.includes('/auth/refresh-tokens')) {
+      if (error.status === 401 && token && !req.url.includes('/auth/refresh-token')) {
         if (!isRefreshing) {
           isRefreshing = true;
           refreshTokenSubject.next(null);
@@ -54,8 +54,8 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
             }),
             catchError((refreshError) => {
               isRefreshing = false;
+              authService.logout();
               messageService.add({ severity: 'error', summary: 'Session Expired', detail: 'Please log in again.' });
-              // authService.logout(); // Commented out for debugging - 401 will not logout for now
               return throwError(() => refreshError);
             })
           );

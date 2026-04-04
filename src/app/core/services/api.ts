@@ -10,16 +10,16 @@ export class Api {
   public readonly endpoints = {
     auth: {
       login: `${this.URL}/auth/login`,
-      refresh: `${this.URL}/auth/refresh-tokens`,
+      refresh: `${this.URL}/auth/refresh-token`,
       logout: `${this.URL}/auth/logout`
     },
     dashboard: `${this.URL}/dashboard`,
     users: `${this.URL}/users`,
     roles: `${this.URL}/roles`,
     permissions: `${this.URL}/permissions`,
-    groups: `${this.URL}/api/v1/groups`,
-    plants: `${this.URL}/api/v1/plants`,
-    trees: `${this.URL}/api/v1/trees`,
+    groups: `${this.URL}/groups`,
+    plants: `${this.URL}/plants`,
+    trees: `${this.URL}/trees`,
     organizations: `${this.URL}/organizations`
   };
 }
