@@ -11,7 +11,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { GroupService, IGroup } from '../../../../../core/services/group';
+import { GroupService, IGroup } from '../../../../core/services/group';
 
 @Component({
   selector: 'app-group-management',
@@ -76,10 +76,10 @@ export class GroupManagement implements OnInit {
 
   loadGroups() {
     this.groupService.getGroups().subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.groups = res.data || [];
       },
-      error: (err) => {
+      error: (err: any) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load groups' });
         console.error(err);
       }
@@ -99,12 +99,12 @@ export class GroupManagement implements OnInit {
     if (this.groupForm.valid) {
       const payload: IGroup = this.groupForm.value;
       this.groupService.createGroup(payload).subscribe({
-        next: (res) => {
+        next: (res: any) => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Group Created' });
           this.loadGroups();
           this.hideCreateDialog();
         },
-        error: (err) => {
+        error: (err: any) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message || 'Failed to create group' });
         }
       });

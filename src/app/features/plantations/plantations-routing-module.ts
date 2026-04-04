@@ -8,15 +8,15 @@ const routes: Routes = [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
       { 
         path: 'list', 
-        loadComponent: () => import('./pages/plantation-list/plantation-list.ts').then(c => c.PlantationList)
+        loadComponent: () => import('./pages/plantation-list/plantation-list').then(c => c.PlantationList)
       },
       {
         path: 'new',
-        loadComponent: () => import('./pages/plantation-form/plantation-form.ts').then(c => c.PlantationForm)
+        loadComponent: () => import('./pages/plantation-form/plantation-form').then(c => c.PlantationForm)
       },
       {
         path: 'edit/:id',
-        loadComponent: () => import('./pages/plantation-form/plantation-form.ts').then(c => c.PlantationForm)
+        loadComponent: () => import('./pages/plantation-form/plantation-form').then(c => c.PlantationForm)
       }
     ]
   }
