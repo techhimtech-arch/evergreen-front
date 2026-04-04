@@ -28,5 +28,9 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'assignments',
     loadComponent: () => import('./pages/target-assignments/target-assignments').then(m => m.TargetAssignments)
+  },
+  {
+    path: 'events',
+    loadComponent: () => import('./pages/event-management/event-management').then(m => m.EventManagement)
   }
 ];

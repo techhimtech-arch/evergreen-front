@@ -1,0 +1,182 @@
+<div class="card">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h2>Plantation Events Management</h2>
+    <p-button label="Add New Event" icon="pi pi-plus" (onClick)="openNewEventDialog()"></p-button>
+  </div>
+
+  <p-table
+    [value]="events"
+    [loading]="loading"
+    [paginator]="true"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} events"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    styleClass="p-datatable-striped"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Event Name</th>
+        <th>Date</th>
+        <th>Location</th>
+        <th>Organizer</th>
+        <th>Target Plants</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-event>
+      <tr>
+        <td>{{ event.eventName }}</td>
+        <td>{{ event.eventDate | date:'mediumDate' }}</td>
+        <td>{{ event.location }}</td>
+        <td>{{ getOrganizerName(event.organizerId) }}</td>
+        <td>{{ event.targetPlants | number }}</td>
+        <td>
+          <p-tag
+            [value]="event.status"
+            [severity]="getStatusSeverity(event.status)"
+          ></p-tag>
+        </td>
+        <td>
+          <p-button
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-text p-button-info"
+            pTooltip="Edit"
+            tooltipPosition="top"
+            (onClick)="editEvent(event)"
+          ></p-button>
+          <p-button
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-text p-button-danger"
+            pTooltip="Delete"
+            tooltipPosition="top"
+            (onClick)="deleteEvent(event)"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7" class="text-center">No events found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [(visible)]="displayDialog"
+  [modal]="true"
+  [style]="{width: '600px'}"
+  [header]="isEditing ? 'Edit Event' : 'Add New Event'"
+  [closable]="true"
+>
+  <div class="p-fluid">
+    <div class="field">
+      <label for="eventName">Event Name *</label>
+      <input
+        pInputText
+        id="eventName"
+        [(ngModel)]="eventForm.eventName"
+        required
+        placeholder="Enter event name"
+      />
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea
+        pInputTextarea
+        id="description"
+        [(ngModel)]="eventForm.description"
+        rows="3"
+        placeholder="Enter event description"
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label for="eventDate">Event Date *</label>
+      <p-calendar
+        id="eventDate"
+        [(ngModel)]="eventForm.eventDate"
+        dateFormat="yy-mm-dd"
+        [showIcon]="true"
+        placeholder="Select event date"
+      ></p-calendar>
+    </div>
+
+    <div class="field">
+      <label for="location">Location *</label>
+      <input
+        pInputText
+        id="location"
+        [(ngModel)]="eventForm.location"
+        required
+        placeholder="Enter event location"
+      />
+    </div>
+
+    <div class="field">
+      <label for="organizerId">Organizer *</label>
+      <p-dropdown
+        id="organizerId"
+        [(ngModel)]="eventForm.organizerId"
+        [options]="users"
+        optionLabel="firstName"
+        optionValue="_id"
+        placeholder="Select organizer"
+        [showClear]="true"
+      >
+        <ng-template pTemplate="selectedItem" let-selectedUser>
+          <span *ngIf="selectedUser">{{ selectedUser.firstName }} {{ selectedUser.lastName }}</span>
+        </ng-template>
+        <ng-template pTemplate="item" let-user>
+          <span>{{ user.firstName }} {{ user.lastName }}</span>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <div class="field">
+      <label for="targetPlants">Target Plants *</label>
+      <input
+        pInputText
+        id="targetPlants"
+        type="number"
+        [(ngModel)]="eventForm.targetPlants"
+        required
+        placeholder="Enter target number of plants"
+      />
+    </div>
+
+    <div class="field">
+      <label for="status">Status *</label>
+      <p-dropdown
+        id="status"
+        [(ngModel)]="eventForm.status"
+        [options]="statusOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select status"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (onClick)="displayDialog = false"
+    ></p-button>
+    <p-button
+      label="Save"
+      icon="pi pi-check"
+      class="p-button-primary"
+      (onClick)="saveEvent()"
+      [disabled]="!eventForm.eventName || !eventForm.eventDate || !eventForm.location || !eventForm.organizerId || !eventForm.targetPlants"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

@@ -10,8 +10,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { TreeService, ITree } from '../../../../core/services/tree';
 import { PlantService, IPlant } from '../../../../core/services/plant';
-// Assuming an Event service exists for Plantation Events, if not we will mock or bypass for now
-// import { EventService } from '../../../../core/services/event';
+import { EventService } from '../../../../core/services/event';
 
 @Component({
   selector: 'app-plantation-form',
@@ -33,6 +32,7 @@ export class PlantationForm implements OnInit {
   private fb = inject(FormBuilder);
   private treeService = inject(TreeService);
   private plantService = inject(PlantService);
+  private eventService = inject(EventService);
   private messageService = inject(MessageService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -42,7 +42,7 @@ export class PlantationForm implements OnInit {
   currentTreeId: string | null = null;
 
   plants: IPlant[] = [];
-  events: any[] = []; // Placeholder until Event API is complete
+  events: any[] = []; // Plantation events
 
   statuses = [
     { label: 'Planted', value: 'PLANTED' },
@@ -79,7 +79,10 @@ export class PlantationForm implements OnInit {
     this.plantService.getPlants().subscribe(res => {
       this.plants = res?.data || res || [];
     });
-    // Load events when service ready
+
+    this.eventService.getEvents().subscribe(res => {
+      this.events = res?.data || res || [];
+    });
   }
 
   loadTree(id: string) {

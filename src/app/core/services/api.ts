@@ -21,6 +21,7 @@ export class Api {
     plants: `${this.URL}/plants`,
     trees: `${this.URL}/trees`,
     organizations: `${this.URL}/organizations`,
-    assignments: `${this.URL}/assignments`
+    assignments: `${this.URL}/assignments`,
+    events: `${this.URL}/events`
   };
 }
