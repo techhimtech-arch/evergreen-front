@@ -1,0 +1,220 @@
+<p-toast></p-toast>
+
+<div class="profile-container">
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+    <p class="mt-3 text-color-secondary">Loading profile...</p>
+  </div>
+
+  <!-- Profile Content -->
+  <div *ngIf="!loading() && profile()" class="profile-content">
+    <!-- Header Card -->
+    <p-card class="profile-header-card mb-4">
+      <div class="flex align-items-center gap-4">
+        <p-avatar
+          [label]="getInitials()"
+          size="xlarge"
+          styleClass="profile-avatar">
+        </p-avatar>
+
+        <div class="profile-info">
+          <div class="flex justify-content-between align-items-center w-full">
+            <div>
+              <h1 class="profile-name m-0">
+                {{ profile()?.firstName }} {{ profile()?.lastName }}
+              </h1>
+              <p class="profile-email text-color-secondary m-0">{{ profile()?.email }}</p>
+            </div>
+            <p-button label="Change Password" icon="pi pi-key" severity="secondary" (onClick)="showChangePassword()"></p-button>
+          </div>
+          <div class="profile-meta mt-2">
+            <p-badge
+              [value]="profile()?.userType?.replace('_', ' ')"
+              severity="info"
+              styleClass="mr-2">
+            </p-badge>
+            <p-badge
+              [value]="getStatusText()"
+              [styleClass]="getStatusBadgeClass()">
+            </p-badge>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Details Grid -->
+    <div class="grid">
+      <!-- Account Information -->
+      <div class="col-12 md:col-6">
+        <p-card header="Account Information" class="h-full">
+          <div class="info-grid">
+            <div class="info-item">
+              <label class="info-label">User ID</label>
+              <span class="info-value">{{ profile()?._id }}</span>
+            </div>
+
+            <div class="info-item">
+              <label class="info-label">UUID</label>
+              <span class="info-value font-mono">{{ profile()?.uuid }}</span>
+            </div>
+
+            <div class="info-item">
+              <label class="info-label">Email Verified</label>
+              <p-badge
+                [value]="profile()?.emailVerified ? 'Verified' : 'Not Verified'"
+                [severity]="profile()?.emailVerified ? 'success' : 'warn'">
+              </p-badge>
+            </div>
+
+            <div class="info-item">
+              <label class="info-label">Account Created</label>
+              <span class="info-value">{{ formatDate(profile()?.createdAt || '') }}</span>
+            </div>
+
+            <div class="info-item">
+              <label class="info-label">Last Updated</label>
+              <span class="info-value">{{ formatDate(profile()?.updatedAt || '') }}</span>
+            </div>
+
+            <div class="info-item" *ngIf="profile()?.lastLoginAt">
+              <label class="info-label">Last Login</label>
+              <span class="info-value">{{ formatDate(profile()?.lastLoginAt || '') }}</span>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Preferences -->
+      <div class="col-12 md:col-6">
+        <p-card header="Preferences" class="h-full">
+          <div *ngIf="profile()?.preferences; else noPreferences">
+            <div class="info-grid">
+              <div class="info-item">
+                <label class="info-label">Language</label>
+                <span class="info-value">{{ profile()?.preferences?.language?.toUpperCase() }}</span>
+              </div>
+
+              <div class="info-item">
+                <label class="info-label">Timezone</label>
+                <span class="info-value">{{ profile()?.preferences?.timezone }}</span>
+              </div>
+            </div>
+
+            <p-divider></p-divider>
+
+            <div class="notification-settings">
+              <h4 class="mt-0 mb-3">Notification Settings</h4>
+              <div class="notification-grid">
+                <div class="notification-item">
+                  <i class="pi pi-envelope mr-2"></i>
+                  <span>Email Notifications</span>
+                  <p-badge
+                    [value]="profile()?.preferences?.notifications?.email ? 'Enabled' : 'Disabled'"
+                    [severity]="profile()?.preferences?.notifications?.email ? 'success' : 'secondary'"
+                    styleClass="ml-auto">
+                  </p-badge>
+                </div>
+
+                <div class="notification-item">
+                  <i class="pi pi-bell mr-2"></i>
+                  <span>Push Notifications</span>
+                  <p-badge
+                    [value]="profile()?.preferences?.notifications?.push ? 'Enabled' : 'Disabled'"
+                    [severity]="profile()?.preferences?.notifications?.push ? 'success' : 'secondary'"
+                    styleClass="ml-auto">
+                  </p-badge>
+                </div>
+
+                <div class="notification-item">
+                  <i class="pi pi-mobile mr-2"></i>
+                  <span>SMS Notifications</span>
+                  <p-badge
+                    [value]="profile()?.preferences?.notifications?.sms ? 'Enabled' : 'Disabled'"
+                    [severity]="profile()?.preferences?.notifications?.sms ? 'success' : 'secondary'"
+                    styleClass="ml-auto">
+                  </p-badge>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noPreferences>
+            <div class="text-center py-4">
+              <i class="pi pi-cog text-4xl text-color-secondary mb-3 block"></i>
+              <p class="text-color-secondary m-0">No preferences configured</p>
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-content-end gap-3 mt-4">
+      <p-button
+        label="Edit Profile"
+        icon="pi pi-pencil"
+        severity="secondary">
+      </p-button>
+      <p-button
+        label="Security Settings"
+        icon="pi pi-lock"
+        severity="help">
+      </p-button>
+    </div>
+  </div>
+
+  <p-dialog header="Change Password" [(visible)]="displayChangePasswordDialog" [modal]="true" [style]="{width: '450px'}" styleClass="p-fluid">
+    <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
+      <div class="field mb-4">
+        <label for="currentPassword">Current Password</label>
+        <p-password
+          id="currentPassword"
+          formControlName="currentPassword"
+          [toggleMask]="true"
+          styleClass="w-full"
+          [feedback]="false">
+        </p-password>
+      </div>
+      <div class="field mb-4">
+        <label for="newPassword">New Password</label>
+        <p-password
+          id="newPassword"
+          formControlName="newPassword"
+          [toggleMask]="true"
+          styleClass="w-full">
+        </p-password>
+      </div>
+      <div class="field mb-4">
+        <label for="confirmPassword">Confirm New Password</label>
+        <p-password
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          [toggleMask]="true"
+          styleClass="w-full"
+          [feedback]="false">
+        </p-password>
+        <small class="p-error" *ngIf="changePasswordForm.hasError('mismatch') && changePasswordForm.get('confirmPassword')?.touched">
+          Passwords do not match.
+        </small>
+      </div>
+      <div class="flex justify-content-end gap-2 mt-4">
+        <p-button label="Cancel" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="displayChangePasswordDialog = false"></p-button>
+        <p-button label="Save" icon="pi pi-check" type="submit" [disabled]="changePasswordForm.invalid" [loading]="submittingPassword"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+  <!-- Error State -->
+  <div *ngIf="!loading() && !profile()" class="error-container">
+    <div class="text-center">
+      <i class="pi pi-exclamation-triangle text-4xl text-red-500 mb-3 block"></i>
+      <h3>Unable to Load Profile</h3>
+      <p class="text-color-secondary">Please try refreshing the page or contact support if the problem persists.</p>
+      <p-button
+        label="Retry"
+        icon="pi pi-refresh"
+        (onClick)="loadProfile()"
+        severity="secondary">
+      </p-button>
+    </div>
+  </div>
+</div>

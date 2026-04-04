@@ -1,2 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.p-select-label, .p-dropdown-label {
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+}
+
+.p-select, .p-dropdown {
+    align-items: center;
+    min-height: 2.5rem;
+}
+
+/* Ensure the placeholder and text overflow correctly instead of cutting visually */
+.p-select-label.p-placeholder, .p-dropdown-label.p-placeholder {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    align-self: center;
+}
 

@@ -39,22 +39,22 @@
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
         <td>{{user.email}}</td>
-        <td><span class="p-badge p-badge-info">{{user.role?.name || user.roleId || 'N/A'}}</span></td>
+        <td><span class="p-badge p-badge-info">{{user.role?.name || user.userType || 'N/A'}}</span></td>
         <td>
-          <span class="p-badge" [class]="user.isActive ? 'p-badge-success' : 'p-badge-danger'">
-            {{user.isActive ? 'Active' : 'Inactive'}}
+          <span class="p-badge" [class]="(user.status === 'ACTIVE' || user.isActive) ? 'p-badge-success' : 'p-badge-danger'">
+            {{(user.status === 'ACTIVE' || user.isActive) ? 'Active' : 'Inactive'}}
           </span>
         </td>
         <td>
           <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [text]="true" severity="info" (onClick)="editUser(user)"></p-button>
           <p-button 
-            [icon]="user.isActive ? 'pi pi-ban' : 'pi pi-check'" 
+            [icon]="(user.status === 'ACTIVE' || user.isActive) ? 'pi pi-ban' : 'pi pi-check'" 
             class="mr-2" 
             [rounded]="true" 
             [text]="true" 
-            [severity]="user.isActive ? 'help' : 'success'" 
+            [severity]="(user.status === 'ACTIVE' || user.isActive) ? 'help' : 'success'" 
             (onClick)="toggleUserStatus(user)"
-            pTooltip="{{user.isActive ? 'Deactivate' : 'Activate'}} User">
+            pTooltip="{{(user.status === 'ACTIVE' || user.isActive) ? 'Deactivate' : 'Activate'}} User">
           </p-button>
           <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="deleteUser(user.id)"></p-button>
         </td>
@@ -92,15 +92,15 @@
     </div>
 
     <div class="field mb-5">
-      <label for="roleId" class="font-medium text-800">Operational Role <span class="text-red-500">*</span></label>
-      <p-select id="roleId" [options]="roleOptions" formControlName="roleId" optionLabel="label" optionValue="value" placeholder="Select Valid Role" appendTo="body" styleClass="w-full mt-2"></p-select>
+      <label for="userType" class="font-medium text-800">Operational Role <span class="text-red-500">*</span></label>
+      <p-select id="userType" [options]="roleOptions" formControlName="userType" optionLabel="label" optionValue="value" placeholder="Select Valid Role" appendTo="body" styleClass="w-full mt-2"></p-select>
     </div>
 
     <div class="field mb-5">
       <label for="organizationId" class="font-medium text-800">Organization (Optional)</label>
       <p-select id="organizationId" [options]="organizations()" formControlName="organizationId" optionLabel="name" optionValue="_id" placeholder="Select Organization" appendTo="body" styleClass="w-full mt-2" [showClear]="true"></p-select></div> <div class="field mb-5">
-      <label for="isActive" class="font-medium text-800">Account Status</label>
-      <p-select id="isActive" [options]="[{label: 'Active', value: true}, {label: 'Inactive', value: false}]" formControlName="isActive" optionLabel="label" optionValue="value" placeholder="Select Status" appendTo="body" styleClass="w-full mt-2"></p-select>
+      <label for="status" class="font-medium text-800">Account Status</label>
+      <p-select id="status" [options]="[{label: 'Active', value: 'ACTIVE'}, {label: 'Inactive', value: 'INACTIVE'}]" formControlName="status" optionLabel="label" optionValue="value" placeholder="Select Status" appendTo="body" styleClass="w-full mt-2"></p-select>
     </div>
 
     <div class="flex justify-content-end gap-3 pt-3 border-top-1 surface-border">

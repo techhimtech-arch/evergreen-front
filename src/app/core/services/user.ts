@@ -9,8 +9,9 @@ export interface UserDetails {
   lastName: string;
   email: string;
   password?: string;
-  roleId: string;
-  isActive?: boolean;
+  userType: string; // Changed from roleId to userType
+  status?: string; // Changed from isActive to status
+  organizationId?: string;
 }
 
 @Injectable({
@@ -40,12 +41,17 @@ export class User {
 
   // 8. Update User
   updateUser(id: string, updateData: Partial<UserDetails>): Observable<any> {
-    return this.httpService.put<any>(`${this.api.endpoints.users}/${id}`, updateData);
+    return this.httpService.patch<any>(`${this.api.endpoints.users}/${id}`, updateData);
   }
 
   // 9. Soft Delete User
   deleteUser(id: string): Observable<any> {
     return this.httpService.delete<any>(`${this.api.endpoints.users}/${id}`);
+  }
+
+  // Get Current User Profile
+  getCurrentUserProfile(): Observable<any> {
+    return this.httpService.get<any>(`${this.api.endpoints.users}/me/profile`);
   }
 
   // 10. Toggle User Status (Active/Inactive)

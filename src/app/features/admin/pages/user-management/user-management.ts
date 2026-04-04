@@ -41,9 +41,9 @@ export class UserManagement implements OnInit {
     lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: [''], // Required dynamic validation based on Creating vs Editing 
-    roleId: ['', Validators.required],
+    userType: ['', Validators.required], // Changed from roleId
     organizationId: [''],
-    isActive: [true]
+    status: ['ACTIVE'] // Changed from isActive
   });
 
   // Mock roles until Phase 4 (Roles API) is integrated
@@ -125,9 +125,9 @@ export class UserManagement implements OnInit {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      roleId: user.userType || user.roleId || user.role?.id || this.roleOptions[1].value,
+      userType: user.userType || user.roleId || user.role?.id || this.roleOptions[1].value, // Changed from roleId
       organizationId: user.organizationId || null,
-      isActive: user.status === 'ACTIVE' || user.isActive === true || user.status === undefined
+      status: user.status || (user.isActive === true ? 'ACTIVE' : 'INACTIVE') // Changed from isActive
     });
 
     this.displayDialog = true;
@@ -140,14 +140,16 @@ export class UserManagement implements OnInit {
       firstName: this.userForm.value.firstName!,
       lastName: this.userForm.value.lastName!,
       email: this.userForm.value.email!,
-      userType: this.userForm.value.roleId!, // Maps 'roleId' field to 'userType'
-      status: this.userForm.value.isActive ? 'ACTIVE' : 'INACTIVE', // Maps boolean to string
+      userType: this.userForm.value.userType!, // Already correct
+      status: this.userForm.value.status!, // Changed from isActive mapping
       password: this.userForm.value.password, // Directly assigning password    
       organizationId: this.userForm.value.organizationId // Directly assigning organizationId
     };
 console.log('Payload being sent to API:', payload); // Debug log to verify payload structure
     if (this.isEditing && this.editingId) {
-      this.userService.updateUser(this.editingId, payload).subscribe({
+      // Include ID in the payload for update operations
+      const updatePayload = { ...payload, id: this.editingId };
+      this.userService.updateUser(this.editingId, updatePayload).subscribe({
         next: () => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User updated successfully' });
           this.displayDialog = false;
@@ -194,25 +196,37 @@ console.log('Payload being sent to API:', payload); // Debug log to verify paylo
     }
   }
 
-  onSearch() {
-    this.loadUsers();
+  toggleUserStatus(user: any) {
+    const newStatus = (user.status === 'ACTIVE' || user.isActive) ? 'INACTIVE' : 'ACTIVE';
+    const updatePayload = { 
+      id: user.id,
+      status: newStatus 
+    };
+    
+    this.userService.updateUser(user.id, updatePayload).subscribe({
+      next: () => {
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Status Updated', 
+          detail: `User ${newStatus.toLowerCase()} successfully` 
+        });
+        this.loadUsers(); // Refresh Grid automatically
+      },
+      error: (err) => {
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Failed to update user status' 
+        });
+      }
+    });
   }
 
   onFilterChange() {
     this.loadUsers();
   }
-
-  toggleUserStatus(user: any) {
-    const newStatus = !user.isActive;
-    this.userService.toggleUserStatus(user.id, newStatus).subscribe({
-      next: () => {
-        this.messageService.add({ 
-          severity: 'success', 
-          summary: 'Status Updated', 
-          detail: `User ${newStatus ? 'activated' : 'deactivated'} successfully` 
-        });
-        this.loadUsers(); // Refresh Grid automatically
-      }
-    });
+   onSearch() {
+    this.loadUsers();
   }
+
 }

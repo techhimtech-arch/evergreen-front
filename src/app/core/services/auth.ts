@@ -90,6 +90,10 @@ export class Auth {
     );
   }
 
+  changePassword(data: any): Observable<any> {
+    return this.http.post<any>(`${this.api.URL}/auth/change-password`, data);
+  }
+
   logout() {
     const refreshToken = this.getRefreshToken();
     

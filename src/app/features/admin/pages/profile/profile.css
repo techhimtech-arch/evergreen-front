@@ -1,0 +1,131 @@
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.profile-header-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.profile-header-card .p-card-body {
+  padding: 2rem;
+}
+
+.profile-avatar {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.profile-email {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.profile-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.info-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #6c757d;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 1rem;
+  color: #495057;
+}
+
+.font-mono {
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.notification-settings h4 {
+  color: #495057;
+  font-weight: 600;
+}
+
+.notification-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.notification-item i {
+  color: #6c757d;
+}
+
+.notification-item span {
+  flex: 1;
+  font-weight: 500;
+  color: #495057;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-name {
+    font-size: 2rem;
+  }
+
+  .profile-header-card .p-card-body {
+    padding: 1.5rem;
+  }
+
+  .profile-container {
+    padding: 0.5rem;
+  }
+}

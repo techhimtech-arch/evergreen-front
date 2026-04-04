@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { RouterOutlet, Router } from '@angular/router';
+import { RouterOutlet, Router, RouterLink } from '@angular/router';
 import { ToolbarModule } from 'primeng/toolbar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { ButtonModule } from 'primeng/button';
@@ -12,7 +12,7 @@ import { Auth, User } from '../../../core/services/auth';
   templateUrl: './admin-layout.component.html',
   styleUrls: ['./admin-layout.component.css'],
   standalone: true,
-  imports: [RouterOutlet, ToolbarModule, PanelMenuModule, ButtonModule, CommonModule]
+  imports: [RouterOutlet, RouterLink, ToolbarModule, PanelMenuModule, ButtonModule, CommonModule],
 })
 export class AdminLayoutComponent implements OnInit {
   private authService = inject(Auth);
@@ -70,11 +70,14 @@ export class AdminLayoutComponent implements OnInit {
     }
 
     // Common logout
-    baseMenu.push({
-      label: 'Logout',
-      icon: 'pi pi-sign-out',
-      command: () => this.logout()
-    });
+    baseMenu.push(
+      { label: 'My Profile', icon: 'pi pi-user', routerLink: ['/admin/profile'] },
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        command: () => this.logout()
+      }
+    );
 
     this.menuItems = baseMenu;
   }

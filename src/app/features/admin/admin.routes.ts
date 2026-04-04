@@ -2,6 +2,10 @@ import { Routes } from '@angular/router';
 
 export const ADMIN_ROUTES: Routes = [
   {
+    path: 'profile',
+    loadComponent: () => import('./pages/profile/profile').then(m => m.Profile)
+  },
+  {
     path: 'groups',
     loadComponent: () => import('./pages/group-management/group-management').then(m => m.GroupManagement)
   },
