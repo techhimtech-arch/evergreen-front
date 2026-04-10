@@ -10,7 +10,7 @@ export class Api {
   public readonly endpoints = {
     auth: {
       login: `${this.URL}/auth/login`,
-      refresh: `${this.URL}/auth/refresh-token`,
+      refresh: `${this.URL}/auth/refresh`,
       logout: `${this.URL}/auth/logout`
     },
     dashboard: `${this.URL}/dashboard`,
@@ -22,6 +22,10 @@ export class Api {
     trees: `${this.URL}/trees`,
     organizations: `${this.URL}/organizations`,
     assignments: `${this.URL}/assignments`,
-    events: `${this.URL}/events`
+    events: `${this.URL}/events`,
+    inspections: {
+      myPending: `${this.URL}/inspections/my-pending`,
+      complete: (id: string) => `${this.URL}/inspections/${id}/complete`
+    }
   };
 }

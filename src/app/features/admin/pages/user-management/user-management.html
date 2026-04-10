@@ -96,9 +96,22 @@
       <p-select id="userType" [options]="roleOptions" formControlName="userType" optionLabel="label" optionValue="value" placeholder="Select Valid Role" appendTo="body" styleClass="w-full mt-2"></p-select>
     </div>
 
+    <div class="field mb-5" *ngIf="userForm.get('userType')?.value !== 'SUPER_ADMIN' && userForm.get('userType')?.value !== 'CITIZEN'">
+      <label for="organizationId" class="font-medium text-800">
+        Organization <span class="text-red-500">*</span>
+      </label>
+      <p-select id="organizationId" [options]="organizations()" formControlName="organizationId" optionLabel="name" optionValue="_id" placeholder="Select Organization" appendTo="body" styleClass="w-full mt-2" [showClear]="true"></p-select>
+    </div>
+
+    <!-- For CITIZEN or SUPER_ADMIN, it's strictly Optional or hidden -->
+    <div class="field mb-5" *ngIf="userForm.get('userType')?.value === 'CITIZEN' || userForm.get('userType')?.value === 'SUPER_ADMIN'">
+      <label for="organizationId" class="font-medium text-800">
+        Organization <span class="text-500 font-italic">(Optional)</span>
+      </label>
+      <p-select id="organizationId" [options]="organizations()" formControlName="organizationId" optionLabel="name" optionValue="_id" placeholder="Select Organization" appendTo="body" styleClass="w-full mt-2" [showClear]="true"></p-select>
+    </div>
+
     <div class="field mb-5">
-      <label for="organizationId" class="font-medium text-800">Organization (Optional)</label>
-      <p-select id="organizationId" [options]="organizations()" formControlName="organizationId" optionLabel="name" optionValue="_id" placeholder="Select Organization" appendTo="body" styleClass="w-full mt-2" [showClear]="true"></p-select></div> <div class="field mb-5">
       <label for="status" class="font-medium text-800">Account Status</label>
       <p-select id="status" [options]="[{label: 'Active', value: 'ACTIVE'}, {label: 'Inactive', value: 'INACTIVE'}]" formControlName="status" optionLabel="label" optionValue="value" placeholder="Select Status" appendTo="body" styleClass="w-full mt-2"></p-select>
     </div>

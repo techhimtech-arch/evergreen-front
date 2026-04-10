@@ -57,6 +57,20 @@ export class UserManagement implements OnInit {
   ngOnInit() {
     this.loadUsers();
     this.loadOrganizations();
+
+    // Dynamically manage validators based on User Type
+    this.userForm.get('userType')?.valueChanges.subscribe((type) => {
+      const orgControl = this.userForm.get('organizationId');
+      if (type === 'CITIZEN' || type === 'SUPER_ADMIN') {
+        orgControl?.clearValidators();
+        if (type === 'CITIZEN') {
+          orgControl?.setValue(null);
+        }
+      } else {
+        orgControl?.setValidators([Validators.required]);
+      }
+      orgControl?.updateValueAndValidity();
+    });
   }
 
   loadOrganizations() {
@@ -136,15 +150,24 @@ export class UserManagement implements OnInit {
   saveUser() {
     if (this.userForm.invalid) return;
 
+    const orgId = this.userForm.value.organizationId;
+
     const payload: any = {
       firstName: this.userForm.value.firstName!,
       lastName: this.userForm.value.lastName!,
       email: this.userForm.value.email!,
       userType: this.userForm.value.userType!, // Already correct
       status: this.userForm.value.status!, // Changed from isActive mapping
-      password: this.userForm.value.password, // Directly assigning password    
-      organizationId: this.userForm.value.organizationId // Directly assigning organizationId
     };
+
+    if (this.userForm.value.password) {
+      payload.password = this.userForm.value.password;
+    }
+
+    if (orgId && orgId !== '') {
+      payload.organizationId = orgId;
+    }
+
 console.log('Payload being sent to API:', payload); // Debug log to verify payload structure
     if (this.isEditing && this.editingId) {
       // Include ID in the payload for update operations

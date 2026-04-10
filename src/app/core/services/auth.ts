@@ -44,9 +44,9 @@ export class Auth {
 
         this.currentUser.set(user);
         
-        // Store tokens securely
-        const accessToken = authData.accessToken || authData.token;
-        const refreshToken = authData.refreshToken;
+        // Store tokens securely according to integration guide
+        const accessToken = authData.tokens?.accessToken || authData.accessToken || authData.token;
+        const refreshToken = authData.tokens?.refreshToken || authData.refreshToken;
         
         if (accessToken) localStorage.setItem('accessToken', accessToken);
         if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
@@ -79,7 +79,7 @@ export class Auth {
     return this.http.post<any>(this.api.endpoints.auth.refresh, { refreshToken }).pipe(
       map(response => {
         const authData = response.data || response;
-        const newAccessToken = authData.accessToken || authData.token;
+        const newAccessToken = authData.tokens?.accessToken || authData.accessToken || authData.token;
         if (newAccessToken) localStorage.setItem('accessToken', newAccessToken);
         return { accessToken: newAccessToken };
       }),
