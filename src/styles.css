@@ -25,3 +25,63 @@ body {
     align-self: center;
 }
 
+/* Fix PrimeNG button loading state */
+.p-button {
+    transition: all 0.2s ease;
+}
+
+.p-button-loading {
+    position: relative;
+}
+
+.p-button-loading .p-button-label {
+    visibility: hidden;
+}
+
+.p-button-loading .p-button-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Fix dialog and form styling */
+.p-dialog {
+    z-index: 1000;
+}
+
+.p-field {
+    margin-bottom: 1rem;
+}
+
+.p-dialog .p-button {
+    min-width: 120px;
+}
+
+/* Fix select dropdown styling */
+.p-select-overlay, .p-dropdown-panel {
+    z-index: 1100;
+}
+
+/* Ensure proper spacing in forms */
+.formgrid.grid {
+    gap: 1rem;
+}
+
+.field {
+    margin-bottom: 1rem;
+}
+
+/* Fix button disabled state */
+.p-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Fix toast positioning */
+.p-toast {
+    z-index: 2000;
+}
+

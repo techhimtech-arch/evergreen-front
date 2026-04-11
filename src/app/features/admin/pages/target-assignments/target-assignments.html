@@ -8,32 +8,53 @@
   <p-table [value]="assignments" [paginator]="true" [rows]="10" [totalRecords]="totalRecords" [loading]="loading" responsiveLayout="scroll" styleClass="p-datatable-sm p-datatable-gridlines p-datatable-striped">
     <ng-template #header>
       <tr>
-        <th>Group Name</th>
+        <th>Group Details</th>
+        <th>Village</th>
+        <th>Organization</th>
         <th>Land Area (Hectares)</th>
         <th>Target Plants</th>
-        <th>Species Allowed</th>
+        <th>Species</th>
+        <th>Assigned Officer</th>
         <th>Assigned Date</th>
         <th style="width: 10vw">Actions</th>
       </tr>
     </ng-template>
     <ng-template #body let-assignment>
       <tr>
-        <td>{{ assignment.groupId?.name || 'Unknown Group' }}</td>
-        <td>{{ assignment.landArea }}</td>
-        <td>{{ assignment.targetPlants }}</td>
         <td>
-          <span *ngFor="let s of assignment.species" class="p-badge p-badge-info mr-1 mb-1">{{s}}</span>
+          <div class="font-semibold">{{ assignment.groupId?.groupName || assignment.groupName || 'Unknown Group' }}</div>
+          <small class="text-color-secondary">{{ assignment.groupId?.groupType || 'N/A' }}</small>
+        </td>
+        <td>{{ assignment.groupId?.village || 'N/A' }}</td>
+        <td>
+          <div class="font-semibold">{{ assignment.groupId?.organizationId?.name || 'N/A' }}</div>
+        </td>
+        <td>
+          <span class="p-badge p-badge-success">{{ assignment.landArea }} ha</span>
+        </td>
+        <td>
+          <span class="p-badge p-badge-info">{{ assignment.targetPlants }}</span>
+        </td>
+        <td>
+          <span *ngFor="let s of assignment.species; let last = last" class="p-badge p-badge-secondary mr-1 mb-1">
+            {{ s }}{{ last ? '' : ',' }}
+          </span>
+          <span *ngIf="!assignment.species || assignment.species.length === 0" class="text-color-secondary">Any</span>
+        </td>
+        <td>
+          <div class="font-semibold">{{ assignment.assignedOfficer?.firstName || 'N/A' }} {{ assignment.assignedOfficer?.lastName || '' }}</div>
+          <small class="text-color-secondary">Officer</small>
         </td>
         <td>{{ assignment.assignedDate | date:'mediumDate' }}</td>
         <td>
             <!-- View / Edit Options -->
-            <p-button icon="pi pi-eye" class="mr-2" [rounded]="true" [text]="true" severity="info" (onClick)="viewDetails(assignment)"></p-button>
+            <p-button icon="pi pi-eye" class="mr-2" [rounded]="true" [text]="true" severity="info" (onClick)="viewDetails(assignment)" tooltip="View Details"></p-button>
         </td>
       </tr>
     </ng-template>
     <ng-template #emptymessage>
       <tr>
-        <td colspan="6" class="text-center p-4 text-color-secondary">No target assignments found.</td>
+        <td colspan="9" class="text-center p-4 text-color-secondary">No target assignments found.</td>
       </tr>
     </ng-template>
   </p-table>
@@ -70,5 +91,89 @@
         <p-button label="Assign Target" icon="pi pi-check" type="submit" [disabled]="assignmentForm.invalid" [loading]="saving"></p-button>
       </div>
     </form>
+  </p-dialog>
+
+  <!-- View Assignment Details Modal -->
+  <p-dialog [(visible)]="displayDetailsDialog" header="Assignment Details" [modal]="true" [style]="{width: '700px'}" styleClass="p-fluid">
+    <div *ngIf="selectedAssignment" class="mt-4">
+      <div class="grid">
+        <!-- Group Information -->
+        <div class="col-12 md:col-6">
+          <div class="card p-3 mb-3">
+            <h5 class="mb-3 text-primary">Group Information</h5>
+            <div class="field">
+              <label class="font-semibold">Group Name:</label>
+              <p>{{ selectedAssignment.groupId?.groupName || selectedAssignment.groupName || 'N/A' }}</p>
+            </div>
+            <div class="field">
+              <label class="font-semibold">Group Type:</label>
+              <p>{{ selectedAssignment.groupId?.groupType || 'N/A' }}</p>
+            </div>
+            <div class="field">
+              <label class="font-semibold">Village:</label>
+              <p>{{ selectedAssignment.groupId?.village || 'N/A' }}</p>
+            </div>
+            <div class="field">
+              <label class="font-semibold">Organization:</label>
+              <p>{{ selectedAssignment.groupId?.organizationId?.name || 'N/A' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assignment Details -->
+        <div class="col-12 md:col-6">
+          <div class="card p-3 mb-3">
+            <h5 class="mb-3 text-primary">Assignment Details</h5>
+            <div class="field">
+              <label class="font-semibold">Land Area:</label>
+              <p><span class="p-badge p-badge-success">{{ selectedAssignment.landArea }} hectares</span></p>
+            </div>
+            <div class="field">
+              <label class="font-semibold">Target Plants:</label>
+              <p><span class="p-badge p-badge-info">{{ selectedAssignment.targetPlants }} plants</span></p>
+            </div>
+            <div class="field">
+              <label class="font-semibold">Allowed Species:</label>
+              <p>
+                <span *ngFor="let s of selectedAssignment.species; let last = last" class="p-badge p-badge-secondary mr-1 mb-1">
+                  {{ s }}{{ last ? '' : ',' }}
+                </span>
+                <span *ngIf="!selectedAssignment.species || selectedAssignment.species.length === 0" class="text-color-secondary">Any species allowed</span>
+              </p>
+            </div>
+            <div class="field">
+              <label class="font-semibold">Assigned Officer:</label>
+              <p>{{ selectedAssignment.assignedOfficer?.firstName || 'N/A' }} {{ selectedAssignment.assignedOfficer?.lastName || '' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timestamps -->
+        <div class="col-12">
+          <div class="card p-3">
+            <h5 class="mb-3 text-primary">Timestamps</h5>
+            <div class="grid">
+              <div class="col-12 md:col-4">
+                <label class="font-semibold">Assigned Date:</label>
+                <p>{{ selectedAssignment.assignedDate | date:'fullDate' }}</p>
+              </div>
+              <div class="col-12 md:col-4">
+                <label class="font-semibold">Created At:</label>
+                <p>{{ selectedAssignment.createdAt | date:'fullDate' }}</p>
+              </div>
+              <div class="col-12 md:col-4">
+                <label class="font-semibold">Last Updated:</label>
+                <p>{{ selectedAssignment.updatedAt | date:'fullDate' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <template #footer>
+      <div class="flex justify-content-end">
+        <p-button label="Close" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="hideDetailsDialog()"></p-button>
+      </div>
+    </template>
   </p-dialog>
 </div>
