@@ -37,6 +37,22 @@ export class TreeService {
     return this.httpService.get<any>(this.api.endpoints.trees, params);
   }
 
+  getTreeStatistics(): Observable<any> {
+    return this.httpService.get<any>(this.api.endpoints.treeEndpoints.statistics);
+  }
+
+  getTreeMapData(): Observable<any> {
+    return this.httpService.get<any>(this.api.endpoints.treeEndpoints.mapData);
+  }
+
+  getTreeTimeline(treeId: string): Observable<any> {
+    return this.httpService.get<any>(this.api.endpoints.treeEndpoints.timeline(treeId));
+  }
+
+  getTreePhotos(treeId: string): Observable<any> {
+    return this.httpService.get<any>(this.api.endpoints.treeEndpoints.photos(treeId));
+  }
+
   createTree(data: ITree): Observable<any> {
     return this.httpService.post<any>(this.api.endpoints.trees, data);
   }

@@ -50,9 +50,13 @@ export class AdminLayoutComponent implements OnInit {
         { label: 'Target Assignments', icon: 'pi pi-bullseye', routerLink: ['/admin/assignments'] },
         { label: 'Plantation Assignment', icon: 'pi pi-sitemap', routerLink: ['/plantations/assign'] },
         { label: 'Plantation Records', icon: 'pi pi-camera', routerLink: ['/plantations/records'] },
+        { label: 'Inspection Management', icon: 'pi pi-clipboard', routerLink: ['/inspections'] },
+        { label: 'Tree Monitoring', icon: 'pi pi-map', routerLink: ['/tree-monitoring'] },
+        { label: 'Event Management', icon: 'pi pi-calendar', routerLink: ['/events'] },
         { label: 'Verification', icon: 'pi pi-check-circle', routerLink: ['/verification'] },
         { label: 'Survival Monitoring', icon: 'pi pi-eye', routerLink: ['/survival-monitoring'] },
-        { label: 'Reports', icon: 'pi pi-chart-bar', routerLink: ['/reports'] }
+        { label: 'Reports', icon: 'pi pi-chart-bar', routerLink: ['/reports'] },
+        { label: 'System Settings', icon: 'pi pi-cog', routerLink: ['/admin/settings'] }
       );
     }
 

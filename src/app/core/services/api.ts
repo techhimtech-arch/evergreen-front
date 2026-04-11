@@ -25,7 +25,19 @@ export class Api {
     events: `${this.URL}/events`,
     inspections: {
       myPending: `${this.URL}/inspections/my-pending`,
-      complete: (id: string) => `${this.URL}/inspections/${id}/complete`
+      complete: (id: string) => `${this.URL}/inspections/${id}/complete`,
+      history: (treeId: string) => `${this.URL}/inspections/tree/${treeId}/history`
+    },
+    plantationEvents: {
+      list: `${this.URL}/plantation-events`,
+      upcoming: `${this.URL}/plantation-events/upcoming`,
+      join: (eventId: string) => `${this.URL}/plantation-events/${eventId}/join`
+    },
+    treeEndpoints: {
+      statistics: `${this.URL}/trees/statistics`,
+      mapData: `${this.URL}/trees/map-data`,
+      timeline: (treeId: string) => `${this.URL}/trees/${treeId}/timeline`,
+      photos: (treeId: string) => `${this.URL}/trees/${treeId}/photos`
     }
   };
 }

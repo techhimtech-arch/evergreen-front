@@ -26,6 +26,7 @@ export interface IInspectionPhoto {
 export interface IInspectionFindings {
   treeStatus: string;
   healthScore: number;
+  growthStage: string;
   remarks: string;
   photos?: IInspectionPhoto[];
 }
