@@ -55,10 +55,11 @@ export class Login {
     switch (user.role) {
       case 'SUPER_ADMIN':
       case 'ORG_ADMIN':
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/admin/profile']);
         break;
       case 'VOLUNTEER':
-        this.router.navigate(['/my-assignments']);
+        // Volunteers go to plantations to see their assignments
+        this.router.navigate(['/plantations/list']);
         break;
       case 'CITIZEN':
         this.router.navigate(['/dashboard']);

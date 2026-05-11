@@ -28,18 +28,59 @@
       </div>
 
       <div class="field col-12 md:col-6 mb-4">
-        <label class="font-medium text-800">Photo URL</label>
-        <input pInputText formControlName="photo" class="w-full mt-2" placeholder="https://storage-url.com/tree-proof.jpg" />
+        <label class="font-medium text-800">Photo <span class="text-red-500">*</span></label>
+        <p-fileUpload 
+          [customUpload]="true"
+          (onSelect)="onFileSelect($event)" 
+          [multiple]="false" 
+          accept="image/*" 
+          [showUploadButton]="false"
+          [showCancelButton]="false"
+          styleClass="w-full mt-2"
+          [auto]="false">
+          <ng-template pTemplate="content">
+            <ul *ngIf="selectedFile()">
+              <li class="flex align-items-center justify-content-between">
+                <div>
+                  <span class="font-bold">{{ selectedFile()?.name }}</span>
+                  <div class="text-500 text-sm">{{ (selectedFile()!.size / 1024).toFixed(2) }} KB</div>
+                </div>
+                <p-button 
+                  [text]="true" 
+                  type="button"
+                  icon="pi pi-times" 
+                  (onClick)="selectedFile.set(null)"
+                  styleClass="p-0"></p-button>
+              </li>
+            </ul>
+          </ng-template>
+        </p-fileUpload>
       </div>
 
-      <div formGroupName="coordinates" class="col-12 mt-2 border-top-1 surface-border pt-4">
-        <h3 class="text-xl font-bold mb-3 mt-0">GPS Coordinates</h3>
+      <div class="col-12 mt-2 border-top-1 surface-border pt-4">
+        <div class="flex align-items-center justify-content-between mb-3">
+          <h3 class="text-xl font-bold m-0">GPS Coordinates</h3>
+          <p-button 
+            [loading]="isGpsLoading()"
+            icon="pi pi-map-marker" 
+            label="Capture GPS" 
+            (onClick)="captureGpsLocation()"
+            [disabled]="isGpsLoading()"
+            severity="info"
+            size="small"></p-button>
+        </div>
+        @if (gpsAccuracy()) {
+          <p class="text-500 text-sm mb-3">
+            <i class="pi pi-check-circle text-green-500 mr-2"></i>
+            Accuracy: {{ gpsAccuracy()?.toFixed(2) }}m
+          </p>
+        }
         <div class="formgrid grid">
-          <div class="field col-6">
+          <div class="field col-12 md:col-6">
             <label class="font-medium text-800">Latitude <span class="text-red-500">*</span></label>
             <input pInputText formControlName="latitude" type="number" step="any" class="w-full mt-2" placeholder="e.g. 32.0998" />
           </div>
-          <div class="field col-6">
+          <div class="field col-12 md:col-6">
             <label class="font-medium text-800">Longitude <span class="text-red-500">*</span></label>
             <input pInputText formControlName="longitude" type="number" step="any" class="w-full mt-2" placeholder="e.g. 76.2691" />
           </div>

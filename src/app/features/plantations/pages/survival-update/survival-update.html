@@ -1,1 +1,120 @@
-<p>survival-update works!</p>
+<p-toast></p-toast>
+<div class="card p-4">
+  <div class="flex align-items-center mb-4">
+    <h2 class="text-2xl font-bold m-0">Tree Health & Survival Update</h2>
+  </div>
+
+  <form [formGroup]="survivalForm" (ngSubmit)="submitUpdate()" class="mt-4 max-w-2xl">
+    <div class="formgrid grid">
+      
+      <!-- Tree Selection -->
+      <div class="field col-12 mb-4">
+        <label class="font-medium text-800">Select Tree <span class="text-red-500">*</span></label>
+        <p-select 
+          [options]="trees" 
+          formControlName="treeId" 
+          optionLabel="location" 
+          optionValue="_id" 
+          placeholder="Choose a tree to update" 
+          appendTo="body" 
+          styleClass="w-full mt-2"
+          [showClear]="true">
+          <ng-template pTemplate="item" let-option>
+            <div class="flex align-items-center gap-2">
+              <span>{{ option.location }}</span>
+              <span class="text-500 text-sm">({{ option.plantTypeId }})</span>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+
+      <!-- Health Score Slider -->
+      <div class="field col-12 md:col-6 mb-4">
+        <label class="font-medium text-800">Health Score (1-10) <span class="text-red-500">*</span></label>
+        <div class="flex align-items-center gap-3 mt-2">
+          <p-rating 
+            formControlName="healthScore" 
+            iconOnClass="pi pi-heart-fill"
+            iconOffClass="pi pi-heart"></p-rating>
+          <span class="font-bold text-lg">{{ survivalForm.get('healthScore')?.value }}/10</span>
+        </div>
+      </div>
+
+      <!-- Health Status -->
+      <div class="field col-12 md:col-6 mb-4">
+        <label class="font-medium text-800">Health Status <span class="text-red-500">*</span></label>
+        <p-select 
+          [options]="healthStatuses" 
+          formControlName="healthStatus" 
+          optionLabel="label" 
+          optionValue="value" 
+          placeholder="Select status" 
+          appendTo="body" 
+          styleClass="w-full mt-2"></p-select>
+      </div>
+
+      <!-- Remarks -->
+      <div class="field col-12 mb-4">
+        <label class="font-medium text-800">Health Remarks <span class="text-red-500">*</span></label>
+        <textarea 
+          pInputTextarea 
+          formControlName="remarks" 
+          class="w-full mt-2" 
+          rows="4"
+          placeholder="Describe the tree's health condition, any issues observed, diseases, pest damage, etc."></textarea>
+        @if (survivalForm.get('remarks')?.touched && survivalForm.get('remarks')?.invalid) {
+          <small class="p-error">Remarks must be at least 5 characters</small>
+        }
+      </div>
+
+      <!-- Photo Upload -->
+      <div class="field col-12 mb-4">
+        <label class="font-medium text-800">Health Evidence Photo</label>
+        <p-fileUpload 
+          [customUpload]="true"
+          (onSelect)="onFileSelect($event)" 
+          [multiple]="false" 
+          accept="image/*" 
+          [showUploadButton]="false"
+          [showCancelButton]="false"
+          styleClass="w-full mt-2"
+          [auto]="false">
+          <ng-template pTemplate="content">
+            <ul *ngIf="selectedFile()">
+              <li class="flex align-items-center justify-content-between">
+                <div>
+                  <span class="font-bold">{{ selectedFile()?.name }}</span>
+                  <div class="text-500 text-sm">{{ (selectedFile()!.size / 1024).toFixed(2) }} KB</div>
+                </div>
+                <p-button 
+                  [text]="true" 
+                  type="button"
+                  icon="pi pi-times" 
+                  (onClick)="selectedFile.set(null)"
+                  styleClass="p-0"></p-button>
+              </li>
+            </ul>
+          </ng-template>
+        </p-fileUpload>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex justify-content-end gap-3 pt-4 mt-4 border-top-1 surface-border">
+      <p-button 
+        label="Reset" 
+        icon="pi pi-refresh" 
+        [text]="true" 
+        severity="secondary" 
+        (onClick)="resetForm()"
+        type="button"></p-button>
+      <p-button 
+        [loading]="isLoading()"
+        label="Submit Update" 
+        icon="pi pi-check" 
+        type="submit"
+        [disabled]="survivalForm.invalid || isLoading()"></p-button>
+    </div>
+  </form>
+</div>
+

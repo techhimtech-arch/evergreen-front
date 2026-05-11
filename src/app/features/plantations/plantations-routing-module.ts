@@ -17,6 +17,10 @@ const routes: Routes = [
       {
         path: 'edit/:id',
         loadComponent: () => import('./pages/plantation-form/plantation-form').then(c => c.PlantationForm)
+      },
+      {
+        path: 'survival-update',
+        loadComponent: () => import('./pages/survival-update/survival-update').then(c => c.SurvivalUpdate)
       }
     ]
   }
