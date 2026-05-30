@@ -105,3 +105,119 @@
   font-weight: 600;
 }
 
+/* Carbon Calculator Styles */
+.carbon-card {
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  border: 1px solid #e5e7eb;
+}
+
+::ng-deep .carbon-card .p-card-header {
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #065f46; /* Deep forest green */
+}
+
+.carbon-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.carbon-inputs {
+  background: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #f3f4f6;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+}
+
+.input-group select {
+  font-family: inherit;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.input-group select:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+}
+
+.result-box {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.result-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+
+.mt-4 { margin-top: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.gap-4 { gap: 1rem; }
+.p-4 { padding: 1rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.text-center { text-align: center; }
+.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.uppercase { text-transform: uppercase; }
+.tracking-wider { letter-spacing: 0.05em; }
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-2xl { font-size: 1.5rem; }
+.block { display: block; }
+.w-full { width: 100%; }
+.flex { display: flex; }
+.justify-between { justify-content: space-between; }
+
+/* Colors */
+.bg-green-50 { background-color: #f0fdf4; }
+.border-green-200 { border-color: #bbf7d0; }
+.text-green-700 { color: #15803d; }
+.text-green-900 { color: #14532d; }
+
+.bg-blue-50 { background-color: #eff6ff; }
+.border-blue-200 { border-color: #bfdbfe; }
+.text-blue-700 { color: #1d4ed8; }
+.text-blue-900 { color: #1e3a8a; }
+
+.bg-purple-50 { background-color: #faf5ff; }
+.border-purple-200 { border-color: #e9d5ff; }
+.text-purple-700 { color: #7e22ce; }
+.text-purple-955, .text-purple-950 { color: #3b0764; }
+.text-purple-600 { color: #9333ea; }
+
+.bg-orange-50 { background-color: #fffaf0; }
+.border-orange-200 { border-color: #fed7aa; }
+.text-orange-700 { color: #c2410c; }
+.text-orange-955, .text-orange-950 { color: #7c2d12; }
+.text-orange-600 { color: #ea580c; }
+
+

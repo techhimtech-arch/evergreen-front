@@ -54,6 +54,71 @@
     </p-card>
   </div>
 
+  <!-- Carbon Credit & CO2 Sequestration Calculator Card -->
+  <p-card class="carbon-card mt-4 mb-4" header="Him Evergreen: Carbon Offset & Revenue Estimator (ProClime Model)">
+    <div class="carbon-container">
+      <div class="carbon-inputs">
+        <div class="input-group">
+          <label for="treeSlider">Number of Active/Surviving Trees: <strong>{{ simulatedTrees() | number }}</strong></label>
+          <input 
+            type="range" 
+            id="treeSlider" 
+            min="100" 
+            max="100000" 
+            step="100" 
+            [value]="simulatedTrees()" 
+            (input)="onSliderChange($event)"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600"
+          />
+          <div class="flex justify-between text-xs text-gray-500 mt-1">
+            <span>100 Trees</span>
+            <span>50,000 Trees</span>
+            <span>100,000 Trees</span>
+          </div>
+        </div>
+
+        <div class="input-group mt-3">
+          <label for="speciesSelect">Tree Species Group:</label>
+          <select 
+            id="speciesSelect" 
+            [value]="selectedSpecies()" 
+            (change)="onSpeciesChange($event)"
+            class="w-full p-2 border border-gray-300 rounded-md bg-white text-gray-700 font-medium"
+          >
+            <option value="deodar">Deodar (Himalayan Cedar) - 22 kg CO₂/yr per tree</option>
+            <option value="banOak">Ban Oak - 25 kg CO₂/yr per tree</option>
+            <option value="harad">Harad (Medicinal) - 18 kg CO₂/yr per tree</option>
+            <option value="kail">Kail (Blue Pine) - 20 kg CO₂/yr per tree</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="carbon-results mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="result-box bg-green-50 p-4 rounded-lg border border-green-200 text-center shadow-sm">
+          <span class="block text-xs text-green-700 font-semibold uppercase tracking-wider">Annual CO₂ Sequestration</span>
+          <span class="block text-2xl font-bold text-green-900 mt-2">{{ annualCO2() | number:'1.1-2' }} MT</span>
+        </div>
+
+        <div class="result-box bg-blue-50 p-4 rounded-lg border border-blue-200 text-center shadow-sm">
+          <span class="block text-xs text-blue-700 font-semibold uppercase tracking-wider">Annual Carbon Credits (USD)</span>
+          <span class="block text-2xl font-bold text-blue-900 mt-2">${{ estimatedUSD() | number:'1.0-0' }}</span>
+        </div>
+
+        <div class="result-box bg-purple-50 p-4 rounded-lg border border-purple-200 text-center shadow-sm">
+          <span class="block text-xs text-purple-700 font-semibold uppercase tracking-wider">Farmer/Community Share (30%)</span>
+          <span class="block text-2xl font-bold text-purple-950 mt-2">₹{{ farmerINR() | number:'1.0-0' }}</span>
+          <span class="text-xs text-purple-600 block mt-1">(Under Him Evergreen Agreement)</span>
+        </div>
+
+        <div class="result-box bg-orange-50 p-4 rounded-lg border border-orange-200 text-center shadow-sm">
+          <span class="block text-xs text-orange-700 font-semibold uppercase tracking-wider">HP Forest Dept Share (5%)</span>
+          <span class="block text-2xl font-bold text-orange-950 mt-2">₹{{ govtINR() | number:'1.0-0' }}</span>
+          <span class="text-xs text-orange-600 block mt-1">(State Development Fund)</span>
+        </div>
+      </div>
+    </div>
+  </p-card>
+
   <div class="charts-grid">
     <p-card header="Survival Monitoring (30/60/90 Days)" class="chart-card">
       <p-chart type="bar" [data]="basicData" [options]="basicOptions" height="300px"></p-chart>

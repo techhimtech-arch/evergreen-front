@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -18,6 +18,47 @@ export class MainDashboard implements OnInit {
   private api = inject(Api);
 
   isLoading = signal(true);
+
+  // Carbon Credit Simulator Signals
+  simulatedTrees = signal(25000);
+  selectedSpecies = signal('deodar');
+
+  speciesCoefficients: { [key: string]: number } = {
+    deodar: 22,  // kg CO2/year per tree
+    banOak: 25,
+    harad: 18,
+    kail: 20
+  };
+
+  annualCO2 = computed(() => {
+    const trees = this.simulatedTrees();
+    const coeff = this.speciesCoefficients[this.selectedSpecies()] || 20;
+    return (trees * coeff) / 1000; // in Metric Tons of CO2
+  });
+
+  estimatedUSD = computed(() => {
+    // Carbon Credit pricing ~ $12 per Metric Ton of CO2
+    return this.annualCO2() * 12;
+  });
+
+  farmerINR = computed(() => {
+    // Farmer gets 30% revenue share, 1 USD ~ 83 INR
+    return this.estimatedUSD() * 0.30 * 83;
+  });
+
+  govtINR = computed(() => {
+    // Forest Dept gets 5% revenue share, 1 USD ~ 83 INR
+    return this.estimatedUSD() * 0.05 * 83;
+  });
+
+  onSliderChange(event: any) {
+    const value = parseInt(event.target.value, 10);
+    this.simulatedTrees.set(value);
+  }
+
+  onSpeciesChange(event: any) {
+    this.selectedSpecies.set(event.target.value);
+  }
 
   stats = signal({
     totalGroups: '0',
