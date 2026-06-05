@@ -1,1 +1,41 @@
-<p>survival-report works!</p>
+<section class="report-page">
+  <header>
+    <h2>Survival Monitoring Report</h2>
+    <p>Group-wise plantation survival and mortality tracking.</p>
+  </header>
+
+  @if (loading()) {
+    <div class="empty-state">Loading survival report...</div>
+  } @else if (error()) {
+    <div class="empty-state error">{{ error() }}</div>
+  } @else if (!groups().length) {
+    <div class="empty-state">No survival records available yet.</div>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Group</th>
+          <th>Village</th>
+          <th>District</th>
+          <th>Total Trees</th>
+          <th>Healthy</th>
+          <th>Dead</th>
+          <th>Survival Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (group of groups(); track group._id) {
+          <tr>
+            <td>{{ group.groupName || 'Unassigned' }}</td>
+            <td>{{ group.village || '-' }}</td>
+            <td>{{ group.district || '-' }}</td>
+            <td>{{ group.totalTrees || 0 }}</td>
+            <td>{{ group.healthyTrees || 0 }}</td>
+            <td>{{ group.deadTrees || 0 }}</td>
+            <td>{{ group.survivalRate | number:'1.0-1' }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

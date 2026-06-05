@@ -1,1 +1,50 @@
-<p>map-view works!</p>
+<section class="map-page">
+  <div class="map-header">
+    <div>
+      <h2>Plantation Geo Registry</h2>
+      <p>Geotagged tree records captured from field entries.</p>
+    </div>
+    <div class="summary">
+      <strong>{{ markers().length }}</strong>
+      <span>mapped trees</span>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="empty-state">Loading map data...</div>
+  } @else if (error()) {
+    <div class="empty-state error">{{ error() }}</div>
+  } @else if (!markers().length) {
+    <div class="empty-state">No geotagged trees available yet.</div>
+  } @else {
+    <div class="map-shell">
+      <div class="map-canvas" aria-label="Geotagged tree distribution">
+        @for (marker of markers(); track marker.id) {
+          <span
+            class="map-marker"
+            [ngClass]="statusClass(marker.status)"
+            [style.left.%]="((marker.longitude + 180) / 360) * 100"
+            [style.top.%]="((90 - marker.latitude) / 180) * 100"
+            [title]="marker.treeId + ' - ' + marker.location">
+          </span>
+        }
+      </div>
+
+      <div class="marker-list">
+        @for (marker of markers(); track marker.id) {
+          <article class="marker-row">
+            <div>
+              <strong>{{ marker.treeId }}</strong>
+              <span>{{ marker.species?.name || 'Unknown species' }}</span>
+            </div>
+            <div>
+              <span>{{ marker.group?.village || marker.location }}</span>
+              <small>{{ marker.latitude }}, {{ marker.longitude }}</small>
+            </div>
+            <span class="status-pill" [ngClass]="statusClass(marker.status)">{{ marker.status }}</span>
+          </article>
+        }
+      </div>
+    </div>
+  }
+</section>

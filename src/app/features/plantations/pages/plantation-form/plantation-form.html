@@ -7,9 +7,14 @@
 
   <form [formGroup]="treeForm" class="mt-4 max-w-3xl">
     <div class="formgrid grid">
+      <div class="field col-12 mb-4">
+        <label class="font-medium text-800">Target Assignment <span class="text-red-500">*</span></label>
+        <p-select [options]="assignments" formControlName="assignmentId" optionLabel="_id" optionValue="_id" placeholder="Select Assignment" appendTo="body" styleClass="w-full mt-2"></p-select>
+      </div>
+
       <div class="field col-12 md:col-6 mb-4">
         <label class="font-medium text-800">Plant Species <span class="text-red-500">*</span></label>
-        <p-select [options]="plants" formControlName="plantTypeId" optionLabel="name" optionValue="_id" placeholder="Select Species" appendTo="body" styleClass="w-full mt-2"></p-select>
+        <p-select [options]="plants" formControlName="speciesId" optionLabel="name" optionValue="_id" placeholder="Select Species" appendTo="body" styleClass="w-full mt-2"></p-select>
       </div>
 
       <div class="field col-12 md:col-6 mb-4">
@@ -90,7 +95,7 @@
 
     <div class="flex justify-content-end gap-3 pt-4 mt-4 border-top-1 surface-border">
       <p-button label="Cancel" icon="pi pi-times" [text]="true" severity="secondary" routerLink=".."></p-button>
-      <p-button label="Log Tree" icon="pi pi-check" (onClick)="saveTree()" [disabled]="treeForm.invalid"></p-button>
+      <p-button [label]="isEditMode ? 'Update Tree' : 'Log Tree'" icon="pi pi-check" (onClick)="saveTree()" [disabled]="treeForm.invalid"></p-button>
     </div>
   </form>
 </div>

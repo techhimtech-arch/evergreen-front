@@ -1,1 +1,71 @@
-<p>plantation-report works!</p>
+<section class="report-page">
+  <header>
+    <h2>Plantation Summary Report</h2>
+    <p>Organization, species, and monthly plantation performance.</p>
+  </header>
+
+  @if (loading()) {
+    <div class="empty-state">Loading report...</div>
+  } @else if (error()) {
+    <div class="empty-state error">{{ error() }}</div>
+  } @else if (report()) {
+    <div class="metric-grid">
+      <div class="metric">
+        <span>Total Trees</span>
+        <strong>{{ report()?.overview?.totalTrees || 0 }}</strong>
+      </div>
+      <div class="metric">
+        <span>Organizations</span>
+        <strong>{{ report()?.overview?.totalOrganizations || 0 }}</strong>
+      </div>
+      <div class="metric">
+        <span>Assignments</span>
+        <strong>{{ report()?.overview?.totalAssignments || 0 }}</strong>
+      </div>
+      <div class="metric">
+        <span>Survival Rate</span>
+        <strong>{{ report()?.overview?.survivalRate || 0 }}%</strong>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <h3>Organization-wise Progress</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Organization</th>
+            <th>Type</th>
+            <th>Total</th>
+            <th>Healthy</th>
+            <th>Dead</th>
+            <th>Survival</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (org of report()?.organizationWise || []; track org._id) {
+            <tr>
+              <td>{{ org.organizationName || 'Unassigned' }}</td>
+              <td>{{ org.organizationType || '-' }}</td>
+              <td>{{ org.totalTrees }}</td>
+              <td>{{ org.healthyTrees }}</td>
+              <td>{{ org.deadTrees }}</td>
+              <td>{{ org.survivalRate | number:'1.0-1' }}%</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="report-section">
+      <h3>Top Species</h3>
+      <div class="species-list">
+        @for (species of report()?.speciesDistribution || []; track species._id) {
+          <div>
+            <span>{{ species.speciesName || 'Unknown species' }}</span>
+            <strong>{{ species.count }}</strong>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</section>

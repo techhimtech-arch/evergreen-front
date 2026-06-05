@@ -8,6 +8,11 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TooltipModule } from 'primeng/tooltip';
+import { AssignmentService, IAssignment } from '../../../../core/services/assignment';
+import { GroupService, IGroup } from '../../../../core/services/group';
+import { PlantService, IPlant } from '../../../../core/services/plant';
+import { User } from '../../../../core/services/user';
 
 export interface AssignmentModel {
   id: string;
@@ -32,39 +37,32 @@ export interface AssignmentModel {
     DialogModule,
     InputTextModule,
     SelectModule,
-    InputNumberModule
+    InputNumberModule,
+    TooltipModule
   ],
   templateUrl: './plantation-assignment.html',
   styleUrls: ['./plantation-assignment.css']
 })
 export class PlantationAssignment implements OnInit {
   private fb = inject(FormBuilder);
+  private assignmentService = inject(AssignmentService);
+  private groupService = inject(GroupService);
+  private plantService = inject(PlantService);
+  private userService = inject(User);
   
-  assignments: AssignmentModel[] = [];
+  assignments: IAssignment[] = [];
   displayDialog: boolean = false;
   assignmentForm!: FormGroup;
+  loading = false;
 
-  groups = [
-    { label: 'Saraswati Mahila Mandal (Shimla)', value: 'G-001' },
-    { label: 'Kullu Yuvak Mandal (Kullu)', value: 'G-002' },
-    { label: 'Nari Shakti SHG (Kangra)', value: 'G-003' }
-  ];
-
-  officers = [
-    { label: 'Rajinder Singh (DFO)', value: 'USR-O-101' },
-    { label: 'Suresh Thakur (RO)', value: 'USR-O-102' }
-  ];
-
-  speciesList = [
-    { label: 'Deodar (Cedrus deodara)', value: 'Deodar' },
-    { label: 'Kail (Pinus wallichiana)', value: 'Kail' },
-    { label: 'Ban Oak (Quercus leucotrichophora)', value: 'Ban Oak' },
-    { label: 'Chir Pine (Pinus roxburghii)', value: 'Chir Pine' }
-  ];
+  groups: IGroup[] = [];
+  officers: any[] = [];
+  speciesList: IPlant[] = [];
 
   ngOnInit() {
     this.initForm();
-    this.loadMockData();
+    this.loadDependencies();
+    this.loadAssignments();
   }
 
   initForm() {
@@ -77,37 +75,53 @@ export class PlantationAssignment implements OnInit {
     });
   }
 
-  loadMockData() {
-    this.assignments = [
-      {
-        id: 'A-101',
-        landArea: 1.5,
-        targetPlants: 1200,
-        species: 'Deodar',
-        groupId: 'G-001',
-        assignedOfficer: 'USR-O-101',
-        assignedDate: new Date('2024-05-10'),
-        status: 'In Progress'
+  loadDependencies() {
+    this.groupService.getGroups().subscribe(res => {
+      this.groups = res?.data || res || [];
+    });
+
+    this.plantService.getPlants().subscribe(res => {
+      this.speciesList = res?.data || res || [];
+    });
+
+    this.userService.getUsers({ limit: 100 }).subscribe(res => {
+      const data = res?.data || res || {};
+      this.officers = data.users || data || [];
+    });
+  }
+
+  loadAssignments() {
+    this.loading = true;
+    this.assignmentService.getAssignments().subscribe({
+      next: (res) => {
+        this.assignments = (res?.data || res || []) as IAssignment[];
+        this.loading = false;
       },
-      {
-        id: 'A-102',
-        landArea: 2.0,
-        targetPlants: 2000,
-        species: 'Kail',
-        groupId: 'G-002',
-        assignedOfficer: 'USR-O-102',
-        assignedDate: new Date('2024-05-12'),
-        status: 'Pending'
+      error: () => {
+        this.assignments = [];
+        this.loading = false;
       }
-    ];
+    });
   }
 
-  getGroupName(id: string): string {
-    return this.groups.find(g => g.value === id)?.label || id;
+  getGroupName(group: any): string {
+    const resolved = typeof group === 'string' ? this.groups.find(g => g._id === group) : group;
+    if (!resolved) return 'Unassigned group';
+    return `${resolved.groupName || 'Group'}${resolved.village ? ' (' + resolved.village + ')' : ''}`;
   }
 
-  getOfficerName(id: string): string {
-    return this.officers.find(o => o.value === id)?.label || id;
+  getOfficerName(officer: any): string {
+    const resolved = typeof officer === 'string' ? this.officers.find(o => o._id === officer) : officer;
+    if (!resolved) return 'Unassigned officer';
+    return `${resolved.firstName || ''} ${resolved.lastName || ''}`.trim() || resolved.email || 'Officer';
+  }
+
+  getAssignmentRef(assignment: IAssignment): string {
+    return assignment._id ? assignment._id.slice(-8).toUpperCase() : 'NEW';
+  }
+
+  getSpeciesNames(species: any): string {
+    return Array.isArray(species) ? species.join(', ') : species || '-';
   }
 
   showAssignDialog() {
@@ -122,15 +136,17 @@ export class PlantationAssignment implements OnInit {
   saveAssignment() {
     if (this.assignmentForm.valid) {
       const formValue = this.assignmentForm.value;
-      const newAssignment: AssignmentModel = {
-        id: 'A-' + Math.floor(Math.random() * 1000),
-        assignedDate: new Date(),
-        status: 'Pending',
-        ...formValue
+      const payload = {
+        ...formValue,
+        species: [formValue.species]
       };
-      
-      this.assignments = [...this.assignments, newAssignment];
-      this.hideAssignDialog();
+
+      this.assignmentService.createAssignment(payload).subscribe({
+        next: () => {
+          this.hideAssignDialog();
+          this.loadAssignments();
+        }
+      });
     }
   }
 }

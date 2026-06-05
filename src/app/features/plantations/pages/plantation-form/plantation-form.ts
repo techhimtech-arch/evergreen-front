@@ -13,6 +13,7 @@ import { TreeService, ITree } from '../../../../core/services/tree';
 import { PlantService, IPlant } from '../../../../core/services/plant';
 import { EventService } from '../../../../core/services/event';
 import { GpsService } from '../../../../core/services/gps.service';
+import { AssignmentService, IAssignment } from '../../../../core/services/assignment';
 
 @Component({
   selector: 'app-plantation-form',
@@ -37,6 +38,7 @@ export class PlantationForm implements OnInit {
   private plantService = inject(PlantService);
   private eventService = inject(EventService);
   private gpsService = inject(GpsService);
+  private assignmentService = inject(AssignmentService);
   private messageService = inject(MessageService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -50,6 +52,7 @@ export class PlantationForm implements OnInit {
 
   plants: IPlant[] = [];
   events: any[] = []; // Plantation events
+  assignments: IAssignment[] = [];
 
   statuses = [
     { label: 'Planted', value: 'PLANTED' },
@@ -59,7 +62,8 @@ export class PlantationForm implements OnInit {
 
   constructor() {
     this.treeForm = this.fb.group({
-      plantTypeId: [null, Validators.required],
+      assignmentId: [null, Validators.required],
+      speciesId: [null, Validators.required],
       eventId: [null],
       location: ['', Validators.required],
       latitude: [null, Validators.required],
@@ -90,21 +94,24 @@ export class PlantationForm implements OnInit {
     this.eventService.getEvents().subscribe(res => {
       this.events = res?.data || res || [];
     });
+
+    this.assignmentService.getAssignments().subscribe(res => {
+      this.assignments = (res?.data || res || []) as IAssignment[];
+    });
   }
 
   loadTree(id: string) {
-    this.treeService.getTrees().subscribe({
+    this.treeService.getTree(id).subscribe({
       next: (res) => {
-        const trees = res?.data || res || [];
-        const tree = trees.find((t: any) => t._id === id);
+        const tree = res?.data || res;
         if (tree) {
           this.treeForm.patchValue({
-            plantTypeId: tree.plantTypeId,
-            eventId: tree.eventId,
+            assignmentId: this.getId(tree.assignmentId),
+            speciesId: this.getId(tree.speciesId),
+            eventId: this.getId(tree.eventId),
             location: tree.location,
             latitude: tree.latitude,
             longitude: tree.longitude,
-            photo: tree.photo,
             status: tree.status
           });
         }
@@ -157,14 +164,40 @@ export class PlantationForm implements OnInit {
     }
   }
 
-  saveTree() {
+  async saveTree() {
     if (this.treeForm.invalid) return;
 
     const formValue = this.treeForm.value;
+    const assignment = this.assignments.find(a => a._id === formValue.assignmentId);
+    const groupId = this.getId(assignment?.groupId);
+
+    if (!groupId) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Missing Group',
+        detail: 'Selected assignment does not include a group. Please update the assignment first.'
+      });
+      return;
+    }
+
+    const payload: Partial<ITree> = {
+      ...formValue,
+      groupId
+    };
+    delete (payload as any).photo;
+
+    const photoUrl = await this.readSelectedPhoto();
+    if (photoUrl) {
+      payload.photos = [{
+        url: photoUrl,
+        caption: `Plantation photo captured at ${formValue.location}`,
+        uploadedAt: new Date()
+      }];
+    }
 
     if (this.isEditMode && this.currentTreeId) {
       // Update tree
-      this.treeService.updateTree(this.currentTreeId, formValue).subscribe({
+      this.treeService.updateTree(this.currentTreeId, payload).subscribe({
         next: () => {
           this.messageService.add({severity: 'success', summary: 'Success', detail: 'Tree record updated successfully'});
           setTimeout(() => this.router.navigate(['..']), 1000);
@@ -174,7 +207,7 @@ export class PlantationForm implements OnInit {
         }
       });
     } else {
-      this.treeService.createTree(formValue).subscribe({
+      this.treeService.createTree(payload as ITree).subscribe({
         next: () => {
           this.messageService.add({severity: 'success', summary: 'Success', detail: 'Tree logged successfully'});
           setTimeout(() => this.router.navigate(['..']), 1000);
@@ -184,6 +217,23 @@ export class PlantationForm implements OnInit {
         }
       });
     }
+  }
+
+  private getId(value: any): string | null {
+    if (!value) return null;
+    return typeof value === 'string' ? value : value._id || value.id || null;
+  }
+
+  private readSelectedPhoto(): Promise<string | null> {
+    const file = this.selectedFile();
+    if (!file) return Promise.resolve(null);
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
   }
 }
 

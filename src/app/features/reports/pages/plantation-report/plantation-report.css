@@ -1,0 +1,94 @@
+.report-page {
+  padding: 1.5rem;
+}
+
+header h2 {
+  margin: 0;
+}
+
+header p {
+  color: #64748b;
+  margin: .25rem 0 1rem;
+}
+
+.metric-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 1rem;
+}
+
+.metric,
+.report-section {
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.metric span {
+  color: #64748b;
+  display: block;
+}
+
+.metric strong {
+  display: block;
+  font-size: 1.8rem;
+  margin-top: .35rem;
+}
+
+.report-section {
+  margin-top: 1rem;
+  overflow: auto;
+}
+
+.report-section h3 {
+  margin: 0 0 .75rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: .7rem;
+  text-align: left;
+}
+
+th {
+  color: #475569;
+  font-weight: 700;
+}
+
+.species-list {
+  display: grid;
+  gap: .5rem;
+}
+
+.species-list div {
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  padding: .55rem 0;
+}
+
+.empty-state {
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: #64748b;
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-state.error {
+  color: #b91c1c;
+}
+
+@media (max-width: 900px) {
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -40,24 +40,12 @@ export class DashboardComponent implements OnInit {
     this.httpService.get<any>(this.api.endpoints.dashboard).pipe(
       catchError(error => {
         console.error('Failed to fetch real dashboard data', error);
-        // Providing fallback dummy data if the API connection drops
-        return of({
-          data: {
-            totalTrees: '45,234',
-            activeProjects: '12',
-            volunteers: '1,847',
-            survivalRate: '87.5',
-            activities: [
-              { date: '2024-03-09', activity: 'New plantation project started in Village A', status: 'success' },
-              { date: '2024-03-08', activity: 'Tree planting campaign completed', status: 'success' },
-              { date: '2024-03-07', activity: 'Volunteer training session', status: 'info' },
-              { date: '2024-03-06', activity: 'Monthly report generated', status: 'info' }
-            ]
-          }
-        });
+        this.isLoading.set(false);
+        return of({ data: null });
       })
     ).subscribe((res) => {
       const data = res.data || res;
+      if (!data) return;
       
       this.stats = [
         { title: 'Total Trees', value: data.totalTrees?.toLocaleString() || '0', icon: 'pi pi-tree', color: '#10b981' },

@@ -174,14 +174,19 @@ export class PendingInspectionsComponent implements OnInit {
   }
 
   startInspection(inspection: IInspection): void {
-    // Navigate to inspection form
-    // This would typically use router navigation
-    console.log('Starting inspection for:', inspection);
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Inspection',
+      detail: 'Inspection form navigation is not configured yet.'
+    });
   }
 
   viewDetails(inspection: IInspection): void {
-    // Show inspection details dialog
-    console.log('Viewing details for:', inspection);
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Inspection Details',
+      detail: inspection.tree?.location || 'No additional details available.'
+    });
   }
 
   getPriorityLabel(priority: string): string {

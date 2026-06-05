@@ -20,8 +20,8 @@
       <tr>
         <td>
           <div class="flex flex-column">
-            <span class="font-bold">{{tree.plantType?.name || 'Unknown'}}</span>
-            <small class="text-600">{{tree.plantType?.scientificName}}</small>
+            <span class="font-bold">{{tree.speciesId?.name || tree.species?.name || 'Unknown'}}</span>
+            <small class="text-600">{{tree.speciesId?.scientificName || tree.species?.scientificName}}</small>
           </div>
         </td>
         <td>{{tree.location}}</td>
@@ -32,11 +32,11 @@
             'p-badge-danger': tree.status === 'DEAD'
           }">{{tree.status}}</span>
         </td>
-        <td>{{tree.plantedBy?.name || 'Unknown'}}</td>
-        <td>{{tree.plantedAt | date:'mediumDate'}}</td>
+        <td>{{tree.plantedBy?.firstName ? (tree.plantedBy.firstName + ' ' + (tree.plantedBy.lastName || '')) : 'Unknown'}}</td>
+        <td>{{tree.plantedDate | date:'mediumDate'}}</td>
         <td>
-          <img *ngIf="tree.photo" [src]="tree.photo" alt="Tree Photo" style="width: 50px; height: 50px; border-radius: 4px; object-fit: cover; cursor: pointer;" (click)="viewPhoto(tree.photo)">
-          <i *ngIf="!tree.photo" class="pi pi-image text-3xl text-400"></i>
+          <img *ngIf="tree.photos?.length" [src]="tree.photos[0].url" alt="Tree Photo" style="width: 50px; height: 50px; border-radius: 4px; object-fit: cover; cursor: pointer;" (click)="viewPhoto(tree.photos[0].url)">
+          <i *ngIf="!tree.photos?.length" class="pi pi-image text-3xl text-400"></i>
         </td>
         <td>
           <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [text]="true" severity="info" [routerLink]="['../edit', tree._id]"></p-button>

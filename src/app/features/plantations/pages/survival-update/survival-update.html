@@ -22,7 +22,7 @@
           <ng-template pTemplate="item" let-option>
             <div class="flex align-items-center gap-2">
               <span>{{ option.location }}</span>
-              <span class="text-500 text-sm">({{ option.plantTypeId }})</span>
+              <span class="text-500 text-sm">({{ option.treeId || option._id }})</span>
             </div>
           </ng-template>
         </p-select>

@@ -30,7 +30,8 @@ export class PlantationList implements OnInit {
     this.loading = true;
     this.treeService.getTrees().subscribe({
       next: (res) => {
-        this.trees = res?.data || res || [];
+        const data = res?.data || res || {};
+        this.trees = data.trees || data || [];
         this.loading = false;
       },
       error: (err) => {
@@ -42,7 +43,7 @@ export class PlantationList implements OnInit {
   }
 
   deleteTree(tree: ITree) {
-    if (confirm(`Are you sure you want to delete this ${tree.plantType?.name || 'tree'} record?`) && tree._id) {
+    if (confirm(`Are you sure you want to delete this ${tree.speciesId?.name || tree.species?.name || 'tree'} record?`) && tree._id) {
       this.treeService.deleteTree(tree._id).subscribe({
         next: () => {
           this.messageService.add({severity:'success', summary:'Success', detail:'Tree record deleted successfully'});

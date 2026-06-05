@@ -84,17 +84,12 @@ export class MainDashboard implements OnInit {
     this.httpService.get<any>(this.api.endpoints.dashboard).pipe(
       catchError(error => {
         console.error('Failed to fetch real dashboard data', error);
-        return of({
-          data: {
-            totalGroups: '1,204',
-            plantationSites: '845',
-            totalPlants: '150,000',
-            survivalRate: '92'
-          }
-        });
+        this.isLoading.set(false);
+        return of({ data: null });
       })
     ).subscribe((res) => {
       const data = res.data || res;
+      if (!data) return;
       
       this.stats.set({
         // Based on whatever the API returns, mapping to the 4 stats cards shown on Main Dashboard
@@ -112,7 +107,7 @@ export class MainDashboard implements OnInit {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
 
-    // Survival Monitoring Mock Chart
+    // Survival monitoring demo chart; replace with /reports data when connected.
     this.basicData = {
       labels: ['30 Days', '60 Days', '90 Days'],
       datasets: [
@@ -144,7 +139,7 @@ export class MainDashboard implements OnInit {
         }
     };
 
-    // District-wise distribution Mock Chart
+    // District-wise distribution demo chart; replace with /reports data when connected.
     this.chartData = {
         labels: ['Shimla', 'Kangra', 'Mandi', 'Kullu', 'Solan'],
         datasets: [

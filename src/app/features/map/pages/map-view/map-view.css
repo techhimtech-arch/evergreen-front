@@ -1,0 +1,151 @@
+.map-page {
+  padding: 1.5rem;
+}
+
+.map-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.map-header h2 {
+  margin: 0;
+}
+
+.map-header p {
+  color: #64748b;
+  margin: .25rem 0 0;
+}
+
+.summary {
+  border: 1px solid #dbe4ee;
+  border-radius: 6px;
+  padding: .75rem 1rem;
+  text-align: right;
+}
+
+.summary strong {
+  display: block;
+  font-size: 1.5rem;
+}
+
+.summary span,
+.marker-row small,
+.marker-row span {
+  color: #64748b;
+}
+
+.map-shell {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+}
+
+.map-canvas {
+  background: linear-gradient(135deg, #e8f5ed 0%, #f8fbff 45%, #e9f2e7 100%);
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  min-height: 520px;
+  overflow: hidden;
+  position: relative;
+}
+
+.map-canvas::before {
+  background-image:
+    linear-gradient(#cbd5e1 1px, transparent 1px),
+    linear-gradient(90deg, #cbd5e1 1px, transparent 1px);
+  background-size: 48px 48px;
+  content: "";
+  inset: 0;
+  opacity: .35;
+  position: absolute;
+}
+
+.map-marker {
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, .25);
+  height: 14px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  z-index: 1;
+}
+
+.marker-list {
+  display: grid;
+  gap: .75rem;
+  max-height: 520px;
+  overflow: auto;
+}
+
+.marker-row {
+  align-items: center;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  display: grid;
+  gap: .75rem;
+  grid-template-columns: 1fr 1fr auto;
+  padding: .8rem;
+}
+
+.marker-row strong,
+.marker-row span,
+.marker-row small {
+  display: block;
+}
+
+.status-pill {
+  border-radius: 999px;
+  color: #fff;
+  font-size: .75rem;
+  padding: .25rem .55rem;
+}
+
+.status-planted,
+.status-growing,
+.status-healthy {
+  background: #16a34a;
+}
+
+.status-weak {
+  background: #ca8a04;
+}
+
+.status-dead {
+  background: #dc2626;
+}
+
+.status-unknown {
+  background: #64748b;
+}
+
+.empty-state {
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: #64748b;
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-state.error {
+  color: #b91c1c;
+}
+
+@media (max-width: 900px) {
+  .map-header,
+  .map-shell {
+    display: block;
+  }
+
+  .summary,
+  .marker-list {
+    margin-top: 1rem;
+  }
+
+  .map-canvas {
+    min-height: 360px;
+  }
+}

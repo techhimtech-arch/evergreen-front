@@ -93,7 +93,7 @@ export class TargetAssignments implements OnInit {
       next: (res: any) => {
         this.groupOptions = Array.isArray(res.data) ? res.data : [];
       },
-      error: () => console.error('Failed to groups for dropdown.')
+      error: () => this.groupOptions = []
     });
   }
 
@@ -108,7 +108,7 @@ export class TargetAssignments implements OnInit {
              value: p.commonName || p.scientificName
         }));
       },
-      error: () => console.error('Failed to load plants.')
+      error: () => this.speciesOptions = []
     });
   }
 
@@ -135,18 +135,14 @@ export class TargetAssignments implements OnInit {
         assignedOfficer: officerId
     };
 
-    console.log('Creating assignment with payload:', payload);
-
     this.assignmentService.createAssignment(payload).subscribe({
       next: (res) => {
-        console.log('Assignment created successfully:', res);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Target Assigned' });
         this.hideDialog();
         this.loadAssignments();
         this.saving = false;
       },
       error: (err) => {
-        console.error('Assignment creation failed:', err);
         const errMsg = err.error?.message || 'Failed to create assignment';
         this.messageService.add({ severity: 'error', summary: 'Error', detail: errMsg });
         this.saving = false;
@@ -156,7 +152,6 @@ export class TargetAssignments implements OnInit {
     // Fallback timeout to prevent stuck loading state
     setTimeout(() => {
       if (this.saving) {
-        console.warn('Assignment creation timeout - resetting saving state');
         this.saving = false;
         this.messageService.add({ 
           severity: 'warn', 
@@ -180,6 +175,5 @@ export class TargetAssignments implements OnInit {
   // Manual reset function in case saving state gets stuck
   resetSavingState() {
     this.saving = false;
-    console.log('Saving state manually reset');
   }
 }

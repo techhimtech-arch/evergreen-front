@@ -31,7 +31,6 @@ export class Auth {
   login(email: string, password: string): Observable<{ success: boolean; user?:User }> {
     return this.http.post<any>(this.api.endpoints.auth.login, { email, password }).pipe(
       map(response => {
-        // Adjust these mappings based on your actual backend response structure
         const authData = response.data || response;
         
         const user: User = {

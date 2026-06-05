@@ -6,7 +6,9 @@ import { HttpService } from './http.service';
 export interface ITree {
   id?: string;
   _id?: string;
-  plantTypeId: string;
+  assignmentId?: any;
+  speciesId: any;
+  groupId?: any;
   eventId?: string;
   location: string;
   latitude: number;
@@ -16,8 +18,8 @@ export interface ITree {
   healthRemarks?: string;
   photos?: ITreePhoto[];
   plantedBy?: any; // User object
-  plantedAt?: Date | string;
-  plantType?: any; // Plant object when populated
+  plantedDate?: Date | string;
+  species?: any; // Plant object when populated
 }
 
 export interface ITreePhoto {
@@ -35,6 +37,10 @@ export class TreeService {
 
   getTrees(params?: any): Observable<any> {
     return this.httpService.get<any>(this.api.endpoints.trees, params);
+  }
+
+  getTree(id: string): Observable<any> {
+    return this.httpService.get<any>(`${this.api.endpoints.trees}/${id}`);
   }
 
   getTreeStatistics(): Observable<any> {
@@ -58,7 +64,7 @@ export class TreeService {
   }
 
   updateTree(id: string, data: Partial<ITree>): Observable<any> {
-    return this.httpService.patch<any>(`${this.api.endpoints.trees}/${id}`, data);
+    return this.httpService.put<any>(`${this.api.endpoints.trees}/${id}`, data);
   }
 
   deleteTree(id: string): Observable<any> {

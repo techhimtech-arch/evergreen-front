@@ -10,7 +10,7 @@ export class Api {
   public readonly endpoints = {
     auth: {
       login: `${this.URL}/auth/login`,
-      refresh: `${this.URL}/auth/refresh`,
+      refresh: `${this.URL}/auth/refresh-token`,
       logout: `${this.URL}/auth/logout`
     },
     dashboard: `${this.URL}/dashboard`,

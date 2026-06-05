@@ -10,7 +10,7 @@
   </div>
 
   <p-card class="mt-4 table-card">
-    <p-table [value]="assignments" [paginator]="true" [rows]="10" responsiveLayout="scroll">
+    <p-table [value]="assignments" [loading]="loading" [paginator]="true" [rows]="10" responsiveLayout="scroll">
       <ng-template pTemplate="header">
         <tr>
           <th>Ref ID</th>
@@ -26,18 +26,18 @@
       </ng-template>
       <ng-template pTemplate="body" let-a>
         <tr>
-          <td class="font-semibold text-blue-600">{{a.id}}</td>
+          <td class="font-semibold text-blue-600">{{getAssignmentRef(a)}}</td>
           <td class="font-semibold">{{getGroupName(a.groupId)}}</td>
           <td>{{a.landArea}} Ha</td>
           <td>{{a.targetPlants | number}} Saplings</td>
-          <td>{{a.species}}</td>
+          <td>{{getSpeciesNames(a.species)}}</td>
           <td>{{getOfficerName(a.assignedOfficer)}}</td>
           <td>{{a.assignedDate | date:'mediumDate'}}</td>
           <td>
             <span class="badge" 
-                  [class.badge-pending]="a.status === 'Pending'"
-                  [class.badge-progress]="a.status === 'In Progress'"
-                  [class.badge-completed]="a.status === 'Completed'">
+                  [class.badge-pending]="a.status === 'PENDING'"
+                  [class.badge-progress]="a.status === 'IN_PROGRESS'"
+                  [class.badge-completed]="a.status === 'COMPLETED' || a.status === 'VERIFIED'">
               {{a.status}}
             </span>
           </td>
@@ -60,12 +60,12 @@
     <form [formGroup]="assignmentForm" class="p-fluid grid formgrid">
       <div class="field col-12 md:col-6">
         <label for="groupId">Select Community Group <span class="text-red-500">*</span></label>
-        <p-select id="groupId" [options]="groups" formControlName="groupId" placeholder="Choose a Mahila Mandal / Yuvak Mandal" appendTo="body" [filter]="true"></p-select>
+        <p-select id="groupId" [options]="groups" formControlName="groupId" optionLabel="groupName" optionValue="_id" placeholder="Choose a Mahila Mandal / Yuvak Mandal" appendTo="body" [filter]="true"></p-select>
       </div>
 
       <div class="field col-12 md:col-6">
         <label for="assignedOfficer">Assign Officer <span class="text-red-500">*</span></label>
-        <p-select id="assignedOfficer" [options]="officers" formControlName="assignedOfficer" placeholder="Select Supervisory Officer" appendTo="body"></p-select>
+        <p-select id="assignedOfficer" [options]="officers" formControlName="assignedOfficer" optionLabel="email" optionValue="_id" placeholder="Select Supervisory Officer" appendTo="body"></p-select>
       </div>
 
       <div class="field col-12 md:col-6">
@@ -80,7 +80,7 @@
       
       <div class="field col-12">
         <label for="species">Primary Species <span class="text-red-500">*</span></label>
-        <p-select id="species" [options]="speciesList" formControlName="species" placeholder="Select Primary Plant Species" appendTo="body"></p-select>
+        <p-select id="species" [options]="speciesList" formControlName="species" optionLabel="name" optionValue="name" placeholder="Select Primary Plant Species" appendTo="body"></p-select>
       </div>
     </form>
     

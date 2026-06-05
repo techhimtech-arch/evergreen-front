@@ -47,10 +47,9 @@ export class SurvivalUpdate implements OnInit {
   isLoading = signal(false);
 
   healthStatuses = [
-    { label: 'Excellent', value: 'EXCELLENT' },
-    { label: 'Good', value: 'GOOD' },
-    { label: 'Fair', value: 'FAIR' },
-    { label: 'Poor', value: 'POOR' },
+    { label: 'Healthy', value: 'HEALTHY' },
+    { label: 'Growing', value: 'GROWING' },
+    { label: 'Weak', value: 'WEAK' },
     { label: 'Dead', value: 'DEAD' }
   ];
 
@@ -71,7 +70,8 @@ export class SurvivalUpdate implements OnInit {
   loadTrees() {
     this.treeService.getTrees().subscribe({
       next: (res) => {
-        this.trees = res?.data || res || [];
+        const data = res?.data || res || {};
+        this.trees = data.trees || data || [];
       },
       error: (err) => {
         this.messageService.add({

@@ -29,7 +29,7 @@ export class PlantService {
   }
 
   updatePlant(id: string, data: Partial<IPlant>): Observable<any> {
-    return this.httpService.patch<any>(`${this.api.endpoints.plants}/${id}`, data);
+    return this.httpService.put<any>(`${this.api.endpoints.plants}/${id}`, data);
   }
 
   deletePlant(id: string): Observable<any> {

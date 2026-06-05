@@ -32,7 +32,7 @@ export class GroupService {
   }
 
   updateGroup(id: string, data: Partial<IGroup>): Observable<any> {
-    return this.httpService.patch<any>(`${this.api.endpoints.groups}/${id}`, data);
+    return this.httpService.put<any>(`${this.api.endpoints.groups}/${id}`, data);
   }
 
   deleteGroup(id: string): Observable<any> {

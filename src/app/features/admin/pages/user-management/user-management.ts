@@ -46,7 +46,6 @@ export class UserManagement implements OnInit {
     status: ['ACTIVE'] // Changed from isActive
   });
 
-  // Mock roles until Phase 4 (Roles API) is integrated
   roleOptions = [
     { label: 'Super Admin', value: 'SUPER_ADMIN' },
     { label: 'Org Admin', value: 'ORG_ADMIN' },
@@ -79,7 +78,7 @@ export class UserManagement implements OnInit {
         const orgs = res.data || res || [];
         this.organizations.set(orgs);
       },
-      error: (err) => console.error('Failed to load organizations', err)
+      error: () => this.organizations.set([])
     });
   }
 
@@ -104,12 +103,8 @@ export class UserManagement implements OnInit {
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('API Error, rendering fallback view', err);
-        // Fallback UI to check design if backend is temporarily disconnected 
-        this.users.set([
-          { id: '1', firstName: 'John', lastName: 'Doe', email: 'john.doe@evergreen.com', role: { name: 'Super Admin' } },
-          { id: '2', firstName: 'Pooja', lastName: 'Devi', email: 'pooja.group@evergreen.com', role: { name: 'Group Leader' } }
-        ]);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load users' });
+        this.users.set([]);
         this.isLoading.set(false);
       }
     });
@@ -168,7 +163,6 @@ export class UserManagement implements OnInit {
       payload.organizationId = orgId;
     }
 
-console.log('Payload being sent to API:', payload); // Debug log to verify payload structure
     if (this.isEditing && this.editingId) {
       // Include ID in the payload for update operations
       const updatePayload = { ...payload, id: this.editingId };
