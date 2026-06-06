@@ -1,1 +1,1 @@
-﻿export const environment = { production: true, apiUrl: '/api/v1' };
+export const environment = { production: true, apiUrl: 'https://backend-evergreen.onrender.com/api/v1' };
