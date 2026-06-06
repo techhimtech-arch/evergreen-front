@@ -13,10 +13,19 @@
       </span>
     </div>
     <div class="col-12 md:col-3">
-      <p-select [options]="roleOptions" [(ngModel)]="selectedRole" (onChange)="onFilterChange()" placeholder="Filter by Role" optionLabel="label" optionValue="value" appendTo="body" styleClass="w-full"></p-select>
+      <select class="form-select w-full" [(ngModel)]="selectedRole" (change)="onFilterChange()">
+        <option value="">Filter by Role</option>
+        @for (opt of roleOptions; track opt.value) {
+          <option [value]="opt.value">{{opt.label}}</option>
+        }
+      </select>
     </div>
     <div class="col-12 md:col-3">
-      <p-select [options]="[{label: 'Active', value: 'active'}, {label: 'Inactive', value: 'inactive'}]" [(ngModel)]="selectedStatus" (onChange)="onFilterChange()" placeholder="Filter by Status" optionLabel="label" optionValue="value" appendTo="body" styleClass="w-full"></p-select>
+      <select class="form-select w-full" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+        <option value="">Filter by Status</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
     </div>
     <div class="col-12 md:col-2">
       <p-button label="Clear Filters" icon="pi pi-filter-slash" (onClick)="searchQuery=''; selectedRole=''; selectedStatus=''; onFilterChange()" severity="secondary" styleClass="w-full"></p-button>
@@ -93,14 +102,24 @@
 
     <div class="field mb-5">
       <label for="userType" class="font-medium text-800">Operational Role <span class="text-red-500">*</span></label>
-      <p-select id="userType" [options]="roleOptions" formControlName="userType" optionLabel="label" optionValue="value" placeholder="Select Valid Role" appendTo="body" styleClass="w-full mt-2"></p-select>
+      <select id="userType" formControlName="userType" class="form-select w-full mt-2">
+        <option value="" disabled selected hidden>Select Valid Role</option>
+        @for (opt of roleOptions; track opt.value) {
+          <option [value]="opt.value">{{opt.label}}</option>
+        }
+      </select>
     </div>
 
     <div class="field mb-5" *ngIf="userForm.get('userType')?.value !== 'SUPER_ADMIN' && userForm.get('userType')?.value !== 'CITIZEN'">
       <label for="organizationId" class="font-medium text-800">
         Organization <span class="text-red-500">*</span>
       </label>
-      <p-select id="organizationId" [options]="organizations()" formControlName="organizationId" optionLabel="name" optionValue="_id" placeholder="Select Organization" appendTo="body" styleClass="w-full mt-2" [showClear]="true"></p-select>
+      <select id="organizationId" formControlName="organizationId" class="form-select w-full mt-2">
+        <option value="">Select Organization</option>
+        @for (org of organizations(); track org._id) {
+          <option [value]="org._id">{{org.name}}</option>
+        }
+      </select>
     </div>
 
     <!-- For CITIZEN or SUPER_ADMIN, it's strictly Optional or hidden -->
@@ -108,12 +127,20 @@
       <label for="organizationId" class="font-medium text-800">
         Organization <span class="text-500 font-italic">(Optional)</span>
       </label>
-      <p-select id="organizationId" [options]="organizations()" formControlName="organizationId" optionLabel="name" optionValue="_id" placeholder="Select Organization" appendTo="body" styleClass="w-full mt-2" [showClear]="true"></p-select>
+      <select id="organizationId" formControlName="organizationId" class="form-select w-full mt-2">
+        <option value="">Select Organization</option>
+        @for (org of organizations(); track org._id) {
+          <option [value]="org._id">{{org.name}}</option>
+        }
+      </select>
     </div>
 
     <div class="field mb-5">
       <label for="status" class="font-medium text-800">Account Status</label>
-      <p-select id="status" [options]="[{label: 'Active', value: 'ACTIVE'}, {label: 'Inactive', value: 'INACTIVE'}]" formControlName="status" optionLabel="label" optionValue="value" placeholder="Select Status" appendTo="body" styleClass="w-full mt-2"></p-select>
+      <select id="status" formControlName="status" class="form-select w-full mt-2">
+        <option value="ACTIVE">Active</option>
+        <option value="INACTIVE">Inactive</option>
+      </select>
     </div>
 
     <div class="flex justify-content-end gap-3 pt-3 border-top-1 surface-border">
