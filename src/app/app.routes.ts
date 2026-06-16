@@ -12,6 +12,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/pages/forgot-password/forgot-password').then(m => m.ForgotPassword)
   },
   {
+    path: 'green-adoption',
+    loadChildren: () => import('./features/public-portal/public-portal.routes').then(m => m.PUBLIC_PORTAL_ROUTES)
+  },
+  {
     path: '',
     loadComponent: () => import('./shared/layout/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
     canActivate: [authGuard],
@@ -23,6 +27,10 @@ export const routes: Routes = [
       {
         path: 'admin',
         loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
+      },
+      {
+        path: 'green-adoption-admin',
+        loadChildren: () => import('./features/green-adoption/green-adoption.routes').then(m => m.GREEN_ADOPTION_ROUTES)
       },
       {
         path: 'plantations/assign',
