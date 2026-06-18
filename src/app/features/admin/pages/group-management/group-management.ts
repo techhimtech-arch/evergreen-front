@@ -42,8 +42,8 @@ export class GroupManagement implements OnInit {
   groupForm!: FormGroup;
 
   groupTypes = [
-    { label: 'Mahila Mandal', value: 'Mahila Mandal' },
-    { label: 'Yuvak Mandal', value: 'Yuvak Mandal' },
+    { label: 'Womens Group', value: 'Womens Group' },
+    { label: 'Youth Group', value: 'Youth Group' },
     { label: 'Self Help Group', value: 'Self Help Group' },
     { label: 'Other', value: 'Other' }
   ];

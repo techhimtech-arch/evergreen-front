@@ -2,7 +2,7 @@
   <div class="header-section">
     <div class="title-container">
       <h2>Group Management</h2>
-      <p>Manage Mahila Mandals, Yuvak Mandals, and SHGs across districts.</p>
+      <p>Manage Womens Groups, Youth Groups, and SHGs across districts.</p>
     </div>
     <div class="actions">
       <p-button label="Create Group" icon="pi pi-plus" (click)="showCreateDialog()"></p-button>
@@ -16,7 +16,7 @@
           <th>Group Name</th>
           <th>Type</th>
           <th>District</th>
-          <th>Village / Panchayat</th>
+          <th>Village / Municipality</th>
           <th>Leader Name</th>
           <th>Mobile</th>
           <th>Members</th>
@@ -29,8 +29,8 @@
           <td class="font-semibold">{{g.groupName}}</td>
           <td>
             <span class="badge" 
-                  [class.badge-mm]="g.groupType === 'Mahila Mandal'"
-                  [class.badge-ym]="g.groupType === 'Yuvak Mandal'"
+                  [class.badge-mm]="g.groupType === 'Womens Group'"
+                  [class.badge-ym]="g.groupType === 'Youth Group'"
                   [class.badge-shg]="g.groupType === 'SHG'">
               {{g.groupType}}
             </span>
@@ -63,7 +63,7 @@
     <form [formGroup]="groupForm" class="p-fluid grid formgrid">
       <div class="field col-12 md:col-6">
         <label for="groupName">Group Name <span class="text-red-500">*</span></label>
-        <input id="groupName" type="text" pInputText formControlName="groupName" placeholder="e.g. Saraswati Mahila Mandal">
+        <input id="groupName" type="text" pInputText formControlName="groupName" placeholder="e.g. Saraswati Womens Group">
       </div>
       
       <div class="field col-12 md:col-6">
@@ -77,8 +77,8 @@
       </div>
       
       <div class="field col-12 md:col-6">
-        <label for="panchayat">Panchayat <span class="text-red-500">*</span></label>
-        <input id="panchayat" type="text" pInputText formControlName="panchayat" placeholder="Enter Panchayat Name">
+        <label for="panchayat">Municipality <span class="text-red-500">*</span></label>
+        <input id="panchayat" type="text" pInputText formControlName="panchayat" placeholder="Enter Municipality Name">
       </div>
 
       <div class="field col-12 md:col-6">
