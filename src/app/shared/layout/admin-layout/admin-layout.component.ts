@@ -54,6 +54,7 @@ export class AdminLayoutComponent implements OnInit {
         { label: 'Survival Monitoring', icon: 'pi pi-eye', routerLink: ['/plantations/survival-update'] },
         { label: 'Map View', icon: 'pi pi-map', routerLink: ['/map'] },
         { label: 'Reports', icon: 'pi pi-chart-bar', routerLink: ['/reports'] },
+        { label: 'Nursery Management', icon: 'pi pi-box', routerLink: ['/admin/nursery-management'] },
         { label: 'Green Adoption', icon: 'pi pi-heart', items: [
             { label: 'Forest Sites', icon: 'pi pi-map-marker', routerLink: ['/green-adoption-admin/forest-sites'] },
             { label: 'Proposals', icon: 'pi pi-file', routerLink: ['/green-adoption-admin/proposals'] },

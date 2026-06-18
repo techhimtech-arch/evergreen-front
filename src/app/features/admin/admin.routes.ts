@@ -32,5 +32,9 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'events',
     loadComponent: () => import('./pages/event-management/event-management').then(m => m.EventManagement)
+  },
+  {
+    path: 'nursery-management',
+    loadComponent: () => import('./pages/nursery-management/nursery-management.component').then(m => m.NurseryManagementComponent)
   }
 ];

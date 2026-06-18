@@ -38,6 +38,9 @@ export class Api {
       mapData: `${this.URL}/trees/map-data`,
       timeline: (treeId: string) => `${this.URL}/trees/${treeId}/timeline`,
       photos: (treeId: string) => `${this.URL}/trees/${treeId}/photos`
-    }
+    },
+    nurseries: `${this.URL}/nurseries`,
+    plantRequests: `${this.URL}/plant-requests`,
+    supplyDispatches: `${this.URL}/supply-dispatches`
   };
 }
