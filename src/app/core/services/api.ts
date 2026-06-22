@@ -41,6 +41,7 @@ export class Api {
     },
     nurseries: `${this.URL}/nurseries`,
     plantRequests: `${this.URL}/plant-requests`,
-    supplyDispatches: `${this.URL}/supply-dispatches`
+    supplyDispatches: `${this.URL}/supply-dispatches`,
+    forestSites: `${this.URL}/green-adoption/forest-sites`
   };
 }

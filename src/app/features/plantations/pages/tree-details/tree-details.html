@@ -1,0 +1,98 @@
+<p-toast></p-toast>
+
+<div *ngIf="loading" class="flex justify-content-center align-items-center" style="height: 50vh;">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div *ngIf="!loading && tree" class="p-4">
+    <div class="flex align-items-center mb-4">
+        <p-button icon="pi pi-arrow-left" [text]="true" routerLink="/plantations/list" class="mr-3"></p-button>
+        <h2 class="m-0">Tree Details: {{ tree.location }}</h2>
+    </div>
+
+    <div class="grid">
+        <!-- Tree Basic Info -->
+        <div class="col-12 md:col-4">
+            <p-card header="Tree Information" styleClass="h-full">
+                <div class="flex flex-column gap-3">
+                    <div class="flex justify-content-between">
+                        <span class="text-500 font-medium">Species</span>
+                        <span class="font-bold">{{ tree.species?.name || tree.speciesId?.name || 'Unknown' }}</span>
+                    </div>
+                    <div class="flex justify-content-between">
+                        <span class="text-500 font-medium">Status</span>
+                        <span class="p-badge" [ngClass]="{
+                            'p-badge-success': tree.status === 'HEALTHY',
+                            'p-badge-info': tree.status === 'PLANTED' || tree.status === 'GROWING',
+                            'p-badge-warning': tree.status === 'WEAK',
+                            'p-badge-danger': tree.status === 'DEAD'
+                        }">{{ tree.status }}</span>
+                    </div>
+                    <div class="flex justify-content-between">
+                        <span class="text-500 font-medium">Growth Stage</span>
+                        <span>{{ tree.growthStage }}</span>
+                    </div>
+                    <div class="flex justify-content-between">
+                        <span class="text-500 font-medium">Health Remarks</span>
+                        <span class="text-right w-6">{{ tree.healthRemarks || '-' }}</span>
+                    </div>
+                    <div class="flex justify-content-between">
+                        <span class="text-500 font-medium">Coordinates</span>
+                        <span class="text-sm">{{ tree.latitude | number:'1.2-4' }}, {{ tree.longitude | number:'1.2-4' }}</span>
+                    </div>
+                </div>
+            </p-card>
+        </div>
+
+        <!-- Monitoring Timeline -->
+        <div class="col-12 md:col-8">
+            <p-card header="Monitoring Timeline" styleClass="h-full">
+                <p-timeline [value]="timeline" align="alternate">
+                    <ng-template pTemplate="marker" let-event>
+                        <span class="custom-marker shadow-2" [style.backgroundColor]="event.color">
+                            <i [class]="event.icon"></i>
+                        </span>
+                    </ng-template>
+                    <ng-template pTemplate="content" let-event>
+                        <p-card [header]="event.title" [subheader]="(event.date | date:'medium') || ''">
+                            <p *ngIf="event.description">{{event.description}}</p>
+                            <img *ngIf="event.url" [src]="event.url" [alt]="event.caption" width="200" class="shadow-2 mt-2" style="border-radius: 8px;" />
+                        </p-card>
+                    </ng-template>
+                </p-timeline>
+                <div *ngIf="timeline.length === 0" class="text-center p-4 text-500">
+                    No monitoring history available.
+                </div>
+            </p-card>
+        </div>
+
+        <!-- Photo Gallery -->
+        <div class="col-12 mt-4">
+            <p-card header="Photo Gallery">
+                <div *ngIf="photos.length > 0; else noPhotos">
+                    <p-galleria 
+                        [value]="photos" 
+                        [responsiveOptions]="responsiveOptions" 
+                        [containerStyle]="{'max-width': '800px', 'margin': '0 auto'}" 
+                        [numVisible]="5"
+                        [circular]="true"
+                        [showItemNavigators]="true"
+                        [showThumbnails]="false">
+                        <ng-template pTemplate="item" let-item>
+                            <img [src]="item.url" style="width: 100%; display: block;" [alt]="item.caption" />
+                        </ng-template>
+                        <ng-template pTemplate="caption" let-item>
+                            <h4 class="mb-2 text-white">{{item.caption || 'No caption'}}</h4>
+                            <p class="text-sm text-gray-300">{{item.takenAt | date:'mediumDate'}}</p>
+                        </ng-template>
+                    </p-galleria>
+                </div>
+                <ng-template #noPhotos>
+                    <div class="text-center p-4 text-500">
+                        No photos have been uploaded for this tree yet.
+                    </div>
+                </ng-template>
+            </p-card>
+        </div>
+    </div>
+</div>

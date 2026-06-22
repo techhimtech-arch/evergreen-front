@@ -1,0 +1,121 @@
+<p-toast></p-toast>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+<div class="card">
+    <div class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
+        <h2 class="m-0">Forest Site Management</h2>
+        <span class="p-input-icon-left mt-2 md:mt-0">
+            <p-button label="New Site" icon="pi pi-plus" (onClick)="openNew()" styleClass="p-button-success"></p-button>
+        </span>
+    </div>
+
+    <p-table #dt [value]="sites" [rows]="10" [paginator]="true" [loading]="loading"
+             responsiveLayout="scroll" [rowHover]="true" dataKey="_id"
+             [globalFilterFields]="['siteCode','siteName','district','village']"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="siteCode">Code <p-sortIcon field="siteCode"></p-sortIcon></th>
+                <th pSortableColumn="siteName">Name <p-sortIcon field="siteName"></p-sortIcon></th>
+                <th pSortableColumn="district">District <p-sortIcon field="district"></p-sortIcon></th>
+                <th pSortableColumn="village">Village <p-sortIcon field="village"></p-sortIcon></th>
+                <th pSortableColumn="areaHectare">Area (Ha) <p-sortIcon field="areaHectare"></p-sortIcon></th>
+                <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-site>
+            <tr>
+                <td>{{site.siteCode}}</td>
+                <td><span class="font-bold">{{site.siteName}}</span></td>
+                <td>{{site.district || '-'}}</td>
+                <td>{{site.village || '-'}}</td>
+                <td>{{site.areaHectare}}</td>
+                <td>
+                    <span class="p-badge" [ngClass]="{
+                        'p-badge-success': site.status === 'ACTIVE' || site.status === 'AVAILABLE',
+                        'p-badge-warning': site.status === 'UNDER_REVIEW' || site.status === 'ADOPTED',
+                        'p-badge-info': site.status === 'COMPLETED',
+                        'p-badge-danger': site.status === 'SUSPENDED'
+                    }">{{site.status}}</span>
+                </td>
+                <td>
+                    <div class="flex gap-2">
+                        <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-success p-button-text" (onClick)="editSite(site)"></p-button>
+                        <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="deleteSite(site)"></p-button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7" class="text-center p-4">No forest sites found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Add / Edit Dialog -->
+<p-dialog [(visible)]="siteDialog" [style]="{width: '600px'}" header="Forest Site Details" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <form [formGroup]="siteForm">
+            <div class="formgrid grid">
+                <div class="field col-12 md:col-6">
+                    <label for="siteCode">Site Code <span class="text-red-500">*</span></label>
+                    <input type="text" pInputText id="siteCode" formControlName="siteCode" required autofocus />
+                    <small class="p-error" *ngIf="siteForm.get('siteCode')?.invalid && siteForm.get('siteCode')?.touched">Site Code is required.</small>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="siteName">Site Name <span class="text-red-500">*</span></label>
+                    <input type="text" pInputText id="siteName" formControlName="siteName" required />
+                    <small class="p-error" *ngIf="siteForm.get('siteName')?.invalid && siteForm.get('siteName')?.touched">Site Name is required.</small>
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <label for="areaHectare">Area (Hectares) <span class="text-red-500">*</span></label>
+                    <p-inputNumber id="areaHectare" formControlName="areaHectare" [minFractionDigits]="2"></p-inputNumber>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="estimatedCost">Estimated Cost</label>
+                    <p-inputNumber id="estimatedCost" formControlName="estimatedCost" mode="currency" currency="INR" locale="en-IN"></p-inputNumber>
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <label for="district">District</label>
+                    <input type="text" pInputText id="district" formControlName="district" />
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="village">Village</label>
+                    <input type="text" pInputText id="village" formControlName="village" />
+                </div>
+                
+                <div class="field col-12 md:col-6">
+                    <label for="division">Division</label>
+                    <input type="text" pInputText id="division" formControlName="division" />
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="range">Range</label>
+                    <input type="text" pInputText id="range" formControlName="range" />
+                </div>
+
+                <div class="field col-12">
+                    <label for="status">Status</label>
+                    <p-select [options]="statuses" formControlName="status" optionLabel="label" optionValue="value" appendTo="body"></p-select>
+                </div>
+
+                <div class="field col-12">
+                    <label for="description">Description</label>
+                    <textarea id="description" pTextarea formControlName="description" rows="3"></textarea>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()"></p-button>
+        <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveSite()"></p-button>
+    </ng-template>
+</p-dialog>

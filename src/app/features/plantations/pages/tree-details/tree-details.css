@@ -1,0 +1,20 @@
+.custom-marker {
+    display: flex;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+:host ::ng-deep .p-timeline-event-content,
+:host ::ng-deep .p-timeline-event-opposite {
+    line-height: 1;
+}
+
+:host ::ng-deep .p-galleria .p-galleria-caption {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1rem;
+}

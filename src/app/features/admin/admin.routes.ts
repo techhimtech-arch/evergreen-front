@@ -36,5 +36,9 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'nursery-management',
     loadComponent: () => import('./pages/nursery-management/nursery-management.component').then(m => m.NurseryManagementComponent)
+  },
+  {
+    path: 'forest-sites',
+    loadComponent: () => import('./pages/forest-site-management/forest-site-management').then(m => m.ForestSiteManagement)
   }
 ];

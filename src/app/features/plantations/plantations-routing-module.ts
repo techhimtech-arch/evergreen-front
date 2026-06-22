@@ -21,6 +21,10 @@ const routes: Routes = [
       {
         path: 'survival-update',
         loadComponent: () => import('./pages/survival-update/survival-update').then(c => c.SurvivalUpdate)
+      },
+      {
+        path: 'tree/:id',
+        loadComponent: () => import('./pages/tree-details/tree-details').then(c => c.TreeDetails)
       }
     ]
   }
